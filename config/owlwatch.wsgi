@@ -6,4 +6,4 @@ with open(activate_this) as f:
 import os, sys, logging
 
 sys.path.insert(0, '/var/www/Owl-Watch/app')
-from run import app as application
+from owlwatch import app as application
