@@ -1,22 +1,4 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# 
-# ### ToDo:
-# 
-# - [x] Remove Following Columns
-#     - UID
-#     - iso2
-#     - iso3
-#     - code3
-#     - FIPS
-#     - Country Region
-#     - Combined Keys
-# - [x] Rename Admin2 -> County
-# - [ ] Maybe find population counts for each county to get per capita
-# - [x] Drop any County that says "Out Of" or "Unassigned" (Lat and long are 0)
-# - [ ] 
-# 
+# Created by The White Wolf
 
 import pandas as pd
 import numpy as np
