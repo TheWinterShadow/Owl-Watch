@@ -2,6 +2,14 @@
 
 This will be a COVID dashboard.
 
+### Links to data in API
+- https://web.netsecure.dev/files/covid/global_cases.csv
+- https://web.netsecure.dev/files/covid/global_deaths.csv
+- https://web.netsecure.dev/files/covid/global_recovered.csv
+- https://web.netsecure.dev/files/covid/US_cases.csv
+- https://web.netsecure.dev/files/covid/US_deaths.csv
+
+### Features
 - [ ] Heat Maps
 - [ ] Country Counts 
   - [ ] Tests
