@@ -1,6 +1,58 @@
+
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+[tool.hatch.build]
+directory = "execution/dist"
+[tool.hatch.envs.default.scripts]
+pre-build = [
+    "isort execution/src execution/tests",
+    "black --check execution/src execution/tests",
+    "mypy execution/src"
+]
+
+# Sphinx documentation build script
+docs = "sphinx-build -b html execution/docs/source execution/docs/build"
+[tool.hatch.envs.default]
+dependencies = [
+    "boto3",
+    "pyspark",
+    "pandas",
+    "numpy",
+    "awsglue-dev",
+]
+
+[tool.hatch.envs.dev]
+dependencies = [
+    "sphinx",
+    "boto3",
+    "pyspark",
+    "pandas",
+    "numpy",
+    "awsglue-dev",
+    "boto3-stubs",
+    "isort",
+    "black",
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+    "pre-commit>=3.0.0",
+    "types-boto3",
+    "moto",
+    "pytest-asyncio>=0.21.0",
+    "pytest-mock>=3.10.0",
+]
+
+[tool.hatch.envs.test]
+dependencies = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "moto",
+    "pytest-asyncio>=0.21.0",
+    "pytest-mock>=3.10.0",
+]
+command = "pytest"
 
 [project]
 name = "owl-watch"
@@ -21,44 +73,12 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
 ]
 requires-python = ">=3.9"
-dependencies = [
-    "boto3",
-    "pyspark",
-    "pandas",
-    "numpy",
-    "awsglue-dev",
-]
-
-[project.optional-dependencies]
-dev = [
-    "boto3",
-    "pyspark",
-    "pandas",
-    "numpy",
-    "awsglue-dev",
-    "boto3-stubs",
-    "isort",
-    "black",
-    "pytest>=7.0.0",
-    "pytest-cov>=4.0.0",
-    "flake8>=6.0.0",
-    "mypy>=1.0.0",
-    "pre-commit>=3.0.0",
-    "boto3-stubs",
-    "types-boto3",
-    "moto",
-    "pytest>=7.0.0",
-    "pytest-asyncio>=0.21.0",
-    "pytest-mock>=3.10.0",
-]
-
-
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["execution"]
 
 [tool.setuptools.package-dir]
-"" = "src"
+"" = "execution"
 
 [tool.black]
 line-length = 88
@@ -71,7 +91,6 @@ multi_line_output = 3
 line_length = 88
 
 [tool.mypy]
-
 python_version = "3.9"
 warn_return_any = true
 warn_unused_configs = true
@@ -83,4 +102,7 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
-addopts = "--cov=owl_watch --cov-report=html --cov-report=term-missing"
+addopts = "--cov=src --cov-report=html --cov-report=term-missing"
+
+[tool.hatch.build.targets.wheel]
+packages = ["execution/src"]

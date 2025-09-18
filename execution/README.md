@@ -21,11 +21,9 @@ PySpark ETL jobs and ML processing code for the data engineering pipeline.
 ## Usage
 
 ### Deploy Glue Scripts
-```bash
-bazel run //src:upload_scripts
-```
+Upload your Glue scripts to S3 manually or with a custom script as needed.
 
 ### Run Integration Tests
 ```bash
-bazel test //tests:integration_tests
+hatch run test
 ```

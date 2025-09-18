@@ -12,15 +12,6 @@ Integration tests for the data engineering pipeline.
 
 ## Running Tests
 
-### All Integration Tests
-```bash
-bazel test //tests:integration_tests
-```
-
-### Specific Test File
-```bash
-bazel test //tests:integration_tests --test_filter=test_data_pipeline
-```
 
 ## Test Scenarios
 

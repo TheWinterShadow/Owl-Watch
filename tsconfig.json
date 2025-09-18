@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "commonjs",
-    "lib": [
-      "es2020"
-    ],
+  "target": "ESNext",
+  "module": "commonjs",
+  "lib": ["esnext", "esnext.disposable", "dom"],
     "declaration": true,
+    "outDir": "./cdk/dist",
+    "declarationDir": "./cdk/dist/types",
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -19,12 +19,8 @@
     "inlineSources": true,
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
-    "typeRoots": [
-      "./node_modules/@types"
-    ]
+    "typeRoots": ["./node_modules/@types"],
+    "rootDir": "./cdk"
   },
-  "exclude": [
-    "node_modules",
-    "cdk.out"
-  ]
+  "exclude": ["cdk/cdk.out", "cdk/build", "node_modules", "cdk/dist"]
 }

@@ -1,0 +1,42 @@
+{
+  "name": "owl-watch-cdk",
+  "version": "0.1.0",
+  "description": "AWS CDK infrastructure for Owl-Watch",
+  "main": "cdk/dist/lib/app.js",
+  "types": "cdk/dist/types/app.d.ts",
+  "scripts": {
+    "clean": "rm -rf build cdk/dist cdk/cdk.out node_modules",
+    "lint": "eslint --cache cdk/lib cdk/test && prettier --list-different --cache ./cdk/.",
+    "format": "eslint --fix --cache cdk/lib cdk/test && prettier --write --cache ./cdk/.",
+    "prebuild": "npm run format",
+    "build": "tsc",
+    "watch": "tsc -w",
+    "prepare": "npm run-script build",
+    "test": "jest",
+    "posttest": "generate-coverage-data --language typescript",
+    "cdk": "npx cdk",
+    "deploy": "npx cdk deploy",
+    "destroy": "npx cdk destroy",
+    "synth": "npx cdk synth",
+    "diff": "npx cdk diff",
+    "list-stacks": "cd cdk && npx cdk list",
+    "buildl": "npm run build && npm run list-stacks"
+  },
+  "devDependencies": {
+    "@types/jest": "^28.1.1",
+    "@types/node": "^24.5.2",
+    "@typescript-eslint/eslint-plugin": "^8.44.0",
+    "@typescript-eslint/parser": "^8.44.0",
+    "aws-cdk": "^2.1029.2",
+    "eslint": "^8.23.0",
+    "eslint-config-prettier": "^8.5.0",
+    "jest": "^29.3.1",
+    "prettier": "^2.7.1",
+    "ts-jest": "^29.0.3",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.215.0",
+    "constructs": "^10.0.0"
+  }
+}
