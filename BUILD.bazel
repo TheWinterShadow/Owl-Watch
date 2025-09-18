@@ -1,0 +1,49 @@
+load("@rules_uv//uv:pip.bzl", "pip_compile")
+load("@rules_uv//uv:venv.bzl", "create_venv")
+load("//tools/linting:linters.bzl", "black_lint", "flake8_lint", "isort_lint", "mypy_lint")
+
+# Export npm files for Bazel genrules
+exports_files([
+    "package.json",
+    "package-lock.json",
+])
+
+filegroup(
+    name = "mypy_config",
+    srcs = ["mypy.ini"],
+    visibility = ["//visibility:public"],
+)
+
+package(default_visibility = ["//visibility:public"])
+
+black_lint()
+
+isort_lint()
+
+flake8_lint()
+
+mypy_lint()
+
+# Production requirements (no extras)
+pip_compile(
+    name = "gen_req_prod",
+    requirements_in = "//:pyproject.toml",
+    requirements_txt = "//:requirements_prod.txt",
+)
+
+# Development requirements (with dev extra)
+pip_compile(
+    name = "gen_req_dev",
+    args = [
+        "--extra",
+        "dev",
+    ],  # Example: include dev extras
+    requirements_in = "//:pyproject.toml",
+    requirements_txt = "//:requirements_dev.txt",
+)
+
+create_venv(
+    name = "create_venv",
+    destination_folder = ".venv",
+    requirements_txt = "//:requirements_dev.txt",  # default
+)

@@ -1,0 +1,38 @@
+load("@pip_prod//:requirements.bzl", "requirement")
+load("@rules_python//python:defs.bzl", "py_library")
+
+py_library(
+    name = "etl_jobs",
+    srcs = glob(["etl/*.py"]),
+    visibility = ["//visibility:public"],
+    deps = [
+        requirement("boto3"),
+        requirement("pyspark"),
+        requirement("pandas"),
+        requirement("numpy"),
+        requirement("awsglue-dev"),
+        # awsglue is only available in AWS Glue jobs, not pip-installable. Ignore for local dev/mypy.
+    ],
+)
+
+py_library(
+    name = "ml_processors",
+    srcs = glob(["ml/*.py"]),
+    visibility = ["//visibility:public"],
+    deps = [
+        requirement("boto3"),
+        requirement("awsglue-dev"),
+    ],
+)
+
+filegroup(
+    name = "all_py_files",
+    srcs = glob(["**/*.py"]),
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "glue_scripts",
+    srcs = glob(["etl/*.py"]),
+    visibility = ["//visibility:public"],
+)

@@ -1,0 +1,30 @@
+load("@pip_dev//:requirements.bzl", "requirement")
+load("@rules_python//python:defs.bzl", "py_library", "py_test")
+
+py_library(
+    name = "test_fixtures",
+    srcs = ["conftest.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src:etl_jobs",
+        "//src:ml_processors",
+        requirement("boto3"),
+        requirement("awsglue-dev"),
+    ],
+)
+
+py_test(
+    name = "integration_tests",
+    srcs = glob(["integration/test_*.py"]) + ["integration/__init__.py"],
+    data = ["//tests/fixtures/sample_data:customer_feedback"],
+    main = "integration/test_data_pipeline.py",
+    python_version = "PY3",
+    tags = ["integration"],
+    deps = [
+        ":test_fixtures",
+        "//src:etl_jobs",
+        "//src:ml_processors",
+        requirement("boto3"),
+        requirement("awsglue-dev"),
+    ],
+)

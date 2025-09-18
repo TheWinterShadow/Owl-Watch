@@ -1,0 +1,5 @@
+filegroup(
+    name = "customer_feedback",
+    srcs = ["customer_feedback.json"],
+    visibility = ["//visibility:public"],
+)

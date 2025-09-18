@@ -1,0 +1,35 @@
+[
+  {
+    "id": "feedback-001",
+    "text": "I love this product! It works perfectly and exceeded my expectations.",
+    "timestamp": "2024-01-01T10:00:00Z",
+    "source": "customer_survey",
+    "metadata": {
+      "customer_id": "cust-12345",
+      "product": "widget-pro",
+      "rating": 5
+    }
+  },
+  {
+    "id": "feedback-002", 
+    "text": "The service was terrible and I'm very disappointed with the quality.",
+    "timestamp": "2024-01-01T11:30:00Z",
+    "source": "support_ticket",
+    "metadata": {
+      "customer_id": "cust-67890",
+      "product": "widget-basic",
+      "rating": 1
+    }
+  },
+  {
+    "id": "feedback-003",
+    "text": "Average product, nothing special but does the job adequately.",
+    "timestamp": "2024-01-01T14:15:00Z", 
+    "source": "review_platform",
+    "metadata": {
+      "customer_id": "cust-54321",
+      "product": "widget-standard",
+      "rating": 3
+    }
+  }
+]
