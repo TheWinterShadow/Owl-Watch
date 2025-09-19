@@ -1,3 +1,7 @@
+[tool.hatch.envs.dev.scripts]
+isort = "python -m isort {args}"
+black = "python -m black {args}"
+flake8 = "python -m flake8 {args}"
 
 [build-system]
 requires = ["hatchling"]
