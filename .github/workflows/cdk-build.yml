@@ -105,7 +105,7 @@ jobs:
       - name: List CDK stacks
         run: |
           echo "Listing CDK stacks..."
-          npx cdk list
+          cd cdk && npx cdk list
 
   cdkDiff:
     name: 'CDK Diff'
@@ -130,7 +130,7 @@ jobs:
       - name: Run CDK diff
         run: |
           echo "Running CDK diff..."
-          npx cdk diff
+          cd cdk && npx cdk diff
 
   cdkSynth:
     name: 'CDK Synth'
@@ -155,4 +155,4 @@ jobs:
       - name: Run CDK synth
         run: |
           echo "Running CDK synth..."
-          npx cdk synth
+          cd cdk && npx cdk synth
