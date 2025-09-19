@@ -21,10 +21,13 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-            pip install hatch==1.14.1
+            pip install hatch
+      - name: Pre-Build the project
+        run: |
+          hatch run pre-build
       - name: Build the project
         run: |
-          hatch run pre-build && hatch build
+          hatch build
 
   lintingChecks:
     name: 'Run Linting Checks'
@@ -39,10 +42,13 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-            pip install hatch==1.14.1
+            pip install hatch
+      - name: Pre-Build the project
+        run: |
+          hatch run pre-build
       - name: Build the project
         run: |
-          hatch run pre-build && hatch build
+          hatch build
       - name: Run isort
         run: |
           echo "Running isort..."
@@ -69,10 +75,13 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-            pip install hatch==1.14.1
+            pip install hatch
+      - name: Pre-Build the project
+        run: |
+          hatch run pre-build
       - name: Build the project
         run: |
-          hatch run pre-build && hatch build
+          hatch build
       - name: Run mypy
         run: |
           echo "Running mypy..."
@@ -91,10 +100,13 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-            pip install hatch==1.14.1
+            pip install hatch
+      - name: Pre-Build the project
+        run: |
+          hatch run pre-build
       - name: Build the project
         run: |
-          hatch run pre-build && hatch build
+          hatch build
       - name: Run unit tests
         run: |
           echo "Running unit tests..."
