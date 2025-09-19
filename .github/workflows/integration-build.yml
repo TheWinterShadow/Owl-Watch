@@ -49,15 +49,15 @@ jobs:
       - name: Run isort
         run: |
           echo "Running isort..."
-          hatch run default:isort ./integration_tests --check-only --diff
+          hatch run dev:isort ./integration_tests --check-only --diff
       - name: Run black
         run: |
           echo "Running black..."
-          hatch run default:black ./integration_tests --check --diff
+          hatch run dev:black ./integration_tests --check --diff
       - name: Run flake8
         run: |
           echo "Running flake8..."
-          hatch run default:flake8 ./integration_tests
+          hatch run dev:flake8 ./integration_tests
 
   mypyChecks:
     name: 'Run MyPy Checks'

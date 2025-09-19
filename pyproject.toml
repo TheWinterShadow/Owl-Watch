@@ -13,6 +13,7 @@ pre-build = [
 
 # Sphinx documentation build script
 docs = "sphinx-build -b html execution/docs/source execution/docs/build"
+
 [tool.hatch.envs.default]
 dependencies = [
     "boto3",
