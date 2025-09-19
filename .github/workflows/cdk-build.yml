@@ -35,10 +35,10 @@ jobs:
         needs: codeBuild
         runs-on: ubuntu-latest
         steps:
-          - name: Run tsc
-            run: |
-              echo "Running tsc..."
-              tsc --noEmit
+            - name: Run tsc
+              run: |
+                echo "Running tsc..."
+                tsc --noEmit
 
     unitTests:
         name: 'Run Unit Tests'
