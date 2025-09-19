@@ -2,7 +2,7 @@ name: Execution Build
 
 on:
   push:
-    branches: ["main", "create-cicd-pipeline-with-github-actions"]
+    branches: ["*"]
     paths:
       - 'execution/**'
       - '.github/workflows/execution-build.yml'
