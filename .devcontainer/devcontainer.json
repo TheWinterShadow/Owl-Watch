@@ -11,7 +11,8 @@
     "ghcr.io/devcontainers-community/npm-features/typescript:1": {},
     "ghcr.io/devcontainers-extra/features/bandit:2": {},
     "ghcr.io/devcontainers-extra/features/hatch:2": {},
-    "ghcr.io/devcontainers-extra/features/aws-cdk:2": {}
+    "ghcr.io/devcontainers-extra/features/aws-cdk:2": {},
+    "ghcr.io/devcontainers/features/node:1": {}
   },
   "postCreateCommand": "NONINTERACTIVE=1 /bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\" && echo 'eval \"$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\"' >> /home/vscode/.bashrc && echo \"alias c='clear'\" >> /home/vscode/.bashrc && echo \"alias bb='npm run build && hatch run pre-build && hatch build'\" >> /home/vscode/.bashrc && echo \"alias bbt='hatch test'\" >> /home/vscode/.bashrc && echo \"alias ll='ls -alh'\" >> /home/vscode/.bashrc && /home/linuxbrew/.linuxbrew/bin/brew install hatch isort black mypy"
 }
