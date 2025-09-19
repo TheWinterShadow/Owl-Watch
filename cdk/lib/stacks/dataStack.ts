@@ -1,17 +1,41 @@
-import { RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib';
+import { Duration, Stack, StackProps } from 'aws-cdk-lib';
+import * as path from 'path';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
+import { createS3Bucket } from '../utils/createAsset';
+import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
 
 export class DataStack extends Stack {
-  public readonly bucket: Bucket;
+  public readonly dataBucket: Bucket;
 
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    this.bucket = new Bucket(this, 'DataBucket', {
-      versioned: true,
-      removalPolicy: RemovalPolicy.DESTROY, // NOT recommended for production
-      autoDeleteObjects: true, // NOT recommended for production
+    this.dataBucket = createS3Bucket(this, 'DataBucket', [
+      {
+        id: 'RawDataLifecycleRule',
+        enabled: true,
+        expiration: Duration.days(30),
+        prefix: 'raw/',
+      },
+      {
+        id: 'CleanedDataLifecycleRule',
+        enabled: true,
+        expiration: Duration.days(90),
+        prefix: 'cleaned/',
+      },
+      {
+        id: 'CuratedDataLifecycleRule',
+        enabled: true,
+        expiration: Duration.days(365),
+        prefix: 'curated/',
+      },
+    ]);
+
+    new BucketDeployment(this, 'DeployInitialData', {
+      sources: [Source.asset(path.resolve(__dirname, '../../../execution/src/etl'))],
+      destinationBucket: this.dataBucket,
+      destinationKeyPrefix: 'glue_assets/etl_scripts/', // optional prefix in destination bucket
     });
   }
 }
