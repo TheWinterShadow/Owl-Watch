@@ -1,0 +1,116 @@
+name: Development Environment Setup
+description: Complete development environment setup using Homebrew template
+
+"on":
+  workflow_dispatch:
+    inputs:
+      install-dev-tools:
+        description: Install additional development tools (jq, gh, etc.)
+        required: false
+        type: boolean
+        default: true
+      
+  schedule:
+    # Run weekly to ensure environment setup works
+    - cron: "0 2 * * 1"
+
+jobs:
+  setup-core-tools:
+    name: 'Setup Core Development Tools'
+    uses: ./.github/workflows/setup-homebrew.yml
+    with:
+      packages: 'hatch python@3.11'
+      update-homebrew: true
+
+  setup-additional-tools:
+    name: 'Setup Additional Development Tools'
+    if: ${{ github.event.inputs.install-dev-tools == 'true' || github.event_name == 'schedule' }}
+    needs: setup-core-tools
+    uses: ./.github/workflows/setup-homebrew.yml
+    with:
+      packages: 'jq gh tree htop'
+      update-homebrew: false
+
+  validate-environment:
+    name: 'Validate Development Environment'
+    needs: [setup-core-tools, setup-additional-tools]
+    if: always() && (needs.setup-core-tools.result == 'success')
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Homebrew environment
+        run: |
+          echo "/home/linuxbrew/.linuxbrew/bin" >> $GITHUB_PATH
+          echo "/home/linuxbrew/.linuxbrew/sbin" >> $GITHUB_PATH
+          echo "HOMEBREW_PREFIX=/home/linuxbrew/.linuxbrew" >> $GITHUB_ENV
+
+      - name: Validate core tools
+        run: |
+          echo "🔍 Validating core development tools..."
+          
+          echo "Python version:"
+          python3 --version
+          
+          echo "Hatch version:"
+          hatch --version
+          
+          echo "Available Python versions via Homebrew:"
+          ls /home/linuxbrew/.linuxbrew/bin/python* 2>/dev/null || echo "No additional Python versions found"
+
+      - name: Validate additional tools
+        if: ${{ needs.setup-additional-tools.result == 'success' }}
+        run: |
+          echo "🔍 Validating additional development tools..."
+          
+          for tool in jq gh tree htop; do
+            if command -v "$tool" &> /dev/null; then
+              echo "✅ $tool: $(which $tool)"
+              case $tool in
+                jq) jq --version ;;
+                gh) gh --version | head -n1 ;;
+                tree) tree --version | head -n1 ;;
+                htop) htop --version | head -n1 ;;
+              esac
+            else
+              echo "❌ $tool: not found"
+            fi
+          done
+
+      - name: Test project operations
+        if: hashFiles('pyproject.toml') != ''
+        run: |
+          echo "🧪 Testing Owl-Watch project operations..."
+          
+          # Test hatch environment setup
+          echo "Setting up hatch environment..."
+          hatch env create --skip-install
+          
+          # Show project information
+          echo "Project version:"
+          hatch version
+          
+          echo "Available environments:"
+          hatch env show
+          
+          # Test that we can access Python in the hatch environment
+          echo "Testing Python access in hatch environment:"
+          hatch run python --version
+
+      - name: Environment Summary
+        run: |
+          echo "🎯 Development Environment Summary"
+          echo "================================"
+          echo "OS: $(lsb_release -d | cut -f2)"
+          echo "Homebrew: $(brew --version | head -n1)"
+          echo "Python: $(python3 --version)"
+          echo "Hatch: $(hatch --version)"
+          echo ""
+          echo "Installed Homebrew packages:"
+          brew list | head -20
+          echo ""
+          if [ $(brew list | wc -l) -gt 20 ]; then
+            echo "... and $(( $(brew list | wc -l) - 20 )) more packages"
+          fi
