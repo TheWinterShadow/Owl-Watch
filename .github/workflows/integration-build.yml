@@ -2,7 +2,7 @@ name: Integration Build
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "create-cicd-pipeline-with-github-actions"]
     paths:
       - 'integration_tests/**'
       - '.github/workflows/integration-build.yml'

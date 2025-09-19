@@ -2,7 +2,7 @@ name: CDK Build
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "create-cicd-pipeline-with-github-actions"]
     paths:
       - 'cdk/**'
       - '.github/workflows/cdk-build.yml'
