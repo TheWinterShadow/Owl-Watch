@@ -1,70 +1,92 @@
 name: Integration Build
 
 on:
-    push:
-        branches: [ "main" ]
-        paths:
-            - 'integration_tests/**'
-            - '.github/workflows/integration-build.yml'
+  push:
+    branches: ["main"]
+    paths:
+      - 'integration_tests/**'
+      - '.github/workflows/integration-build.yml'
 
 jobs:
-    installDeps:
-        name: 'Install Dependencies'
-        uses: ./.github/workflows/setup-homebrew.yml
+  codeBuild:
+    name: 'Build Code with Hatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
         with:
-            packages: 'hatch python@3.11 isort black flake8 mypy'
-            update-homebrew: true
-    codeCheckout:
-        name: 'Checkout Code'
-        needs: installDeps
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v4
-    codeBuild:
-        name: 'Build Code with Hatch'
-        needs: codeCheckout
-        runs-on: ubuntu-latest
-        steps:
-            - name: Build the project
-              run: |
-                hatch pre-build && hatch build
-    lintingChecks:
-        name: 'Run Linting Checks'
-        needs: codeBuild
-        runs-on: ubuntu-latest
-        steps:
-            - name: Run isort
-              run: |
-                echo "Running isort..."
-                isort ./integration_tests --check-only --diff
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install hatch
+      - name: Build the project
+        run: |
+          hatch pre-build && hatch build
 
-            - name: Run black
-              run: |
-                echo "Running black..."
-                black ./integration_tests --check --diff
+  lintingChecks:
+    name: 'Run Linting Checks'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install isort black flake8
+      - name: Run isort
+        run: |
+          echo "Running isort..."
+          isort ./integration_tests --check-only --diff
+      - name: Run black
+        run: |
+          echo "Running black..."
+          black ./integration_tests --check --diff
+      - name: Run flake8
+        run: |
+          echo "Running flake8..."
+          flake8 ./integration_tests
 
-            - name: Run flake8
-              run: |
-                echo "Running flake8..."
-                flake8 ./integration_tests
+  mypyChecks:
+    name: 'Run MyPy Checks'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install mypy
+      - name: Run mypy
+        run: |
+          echo "Running mypy..."
+          mypy ./integration_tests
 
-    mypyChecks:
-        name: 'Run MyPy Checks'
-        needs: codeBuild
-        runs-on: ubuntu-latest
-        steps:
-            - name: Run mypy
-              run: |
-                echo "Running mypy..."
-                mypy ./integration_tests
-    
-    unitTests:
-        name: 'Run Unit Tests'
-        needs: codeBuild
-        runs-on: ubuntu-latest
-        steps:
-            - name: Run unit tests
-              run: |
-                echo "Running unit tests..."
-                hatch run test
+  unitTests:
+    name: 'Run Unit Tests'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install hatch
+      - name: Run unit tests
+        run: |
+          echo "Running unit tests..."
+          hatch run test
