@@ -1,7 +1,6 @@
 name: Setup Homebrew
-description: Reusable workflow template for installing Homebrew on Ubuntu and additional packages
 
-"on":
+on:
   workflow_call:
     inputs:
       packages:
@@ -35,7 +34,7 @@ jobs:
         if: steps.check-brew.outputs.installed == 'false'
         run: |
           echo "Installing Homebrew..."
-          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
           
           # Add Homebrew to PATH for current session
           echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> $GITHUB_ENV

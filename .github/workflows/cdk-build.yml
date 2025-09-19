@@ -1,0 +1,79 @@
+name: CDK Build
+
+on:
+    push:
+        branches: [ "main" ]
+        paths:
+            - 'cdk/**'
+            - '.github/workflows/cdk-build.yml'
+
+
+jobs:
+    installDeps:
+        name: 'Install Dependencies'
+        uses: ./.github/workflows/setup-homebrew.yml
+        with:
+            packages: 'node tsc aws-cdk aws-cli jest'
+            update-homebrew: true
+    codeCheckout:
+        name: 'Checkout Code'
+        needs: installDeps
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+    codeBuild:
+        name: 'Build Code with Node'
+        needs: codeCheckout
+        runs-on: ubuntu-latest
+        steps:
+            - name: Build the project
+              run: |
+                npm install && npm run build
+    lintingChecks:
+        name: 'Run Linting Checks'
+        needs: codeBuild
+        runs-on: ubuntu-latest
+        steps:
+          - name: Run tsc
+            run: |
+              echo "Running tsc..."
+              tsc --noEmit
+
+    unitTests:
+        name: 'Run Unit Tests'
+        needs: codeBuild
+        runs-on: ubuntu-latest
+        steps:
+            - name: Run unit tests
+              run: |
+                echo "Running unit tests..."
+                npm run test
+
+    cdkStackList:
+        name: 'List CDK Stacks'
+        needs: codeBuild
+        runs-on: ubuntu-latest
+        steps:
+            - name: List CDK stacks
+              run: |
+                echo "Listing CDK stacks..."
+                cdk list
+    cdkDiff:
+        name: 'CDK Diff'
+        needs: cdkStackList
+        runs-on: ubuntu-latest
+        steps:
+            - name: Run CDK diff
+              run: |
+                echo "Running CDK diff..."
+                cdk diff
+    cdkSynth:
+        name: 'CDK Synth'
+        needs: cdkDiff
+        runs-on: ubuntu-latest
+        steps:
+            - name: Run CDK synth
+              run: |
+                echo "Running CDK synth..."
+                cdk synth
