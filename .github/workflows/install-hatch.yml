@@ -1,0 +1,95 @@
+name: Install Hatch via Homebrew
+description: Workflow that demonstrates using the Homebrew setup template to install hatch
+
+"on":
+  workflow_dispatch:
+    inputs:
+      additional-packages:
+        description: Additional packages to install alongside hatch
+        required: false
+        type: string
+        default: ""
+  
+  push:
+    branches: [ main, master ]
+    paths: 
+      - pyproject.toml
+      - .github/workflows/**
+  
+  pull_request:
+    branches: [ main, master ]
+    paths:
+      - pyproject.toml
+      - .github/workflows/**
+
+jobs:
+  install-hatch:
+    name: 'Setup Development Environment with Hatch'
+    uses: ./.github/workflows/setup-homebrew.yml
+    with:
+      packages: 'hatch ${{ github.event.inputs.additional-packages || inputs.additional-packages || '' }}'
+      update-homebrew: true
+
+  test-hatch-installation:
+    name: 'Test Hatch Installation'
+    needs: install-hatch
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Homebrew environment (from previous job)
+        run: |
+          # Ensure Homebrew is in PATH
+          echo "/home/linuxbrew/.linuxbrew/bin" >> $GITHUB_PATH
+          echo "/home/linuxbrew/.linuxbrew/sbin" >> $GITHUB_PATH
+          
+          # Set environment variables
+          echo "HOMEBREW_PREFIX=/home/linuxbrew/.linuxbrew" >> $GITHUB_ENV
+          echo "HOMEBREW_CELLAR=/home/linuxbrew/.linuxbrew/Cellar" >> $GITHUB_ENV
+          echo "HOMEBREW_REPOSITORY=/home/linuxbrew/.linuxbrew/Homebrew" >> $GITHUB_ENV
+
+      - name: Verify hatch installation
+        run: |
+          echo "Verifying hatch installation..."
+          which hatch
+          hatch --version
+          
+          echo "Testing hatch functionality..."
+          hatch env show
+          
+          echo "Testing project build (if applicable)..."
+          if [ -f "pyproject.toml" ]; then
+            echo "Found pyproject.toml, testing hatch build commands..."
+            hatch version
+            # Test environment creation without actually running potentially long operations
+            hatch env create --skip-install
+          else
+            echo "No pyproject.toml found, skipping build test"
+          fi
+
+      - name: Test hatch with project dependencies
+        if: hashFiles('pyproject.toml') != ''
+        run: |
+          echo "Testing hatch with project dependencies..."
+          
+          # Show available environments
+          hatch env show
+          
+          # Try to install dependencies in default environment
+          echo "Installing dependencies in default environment..."
+          hatch env install
+          
+          # List installed packages
+          echo "Listing installed packages..."
+          hatch run pip list
+
+      - name: Summary
+        run: |
+          echo "🎉 Hatch installation and setup completed successfully!"
+          echo "📋 Summary:"
+          echo "  - Homebrew: $(brew --version | head -n1)"
+          echo "  - Hatch: $(hatch --version)"
+          echo "  - Python environments available:"
+          hatch env show || echo "  No environments configured"
