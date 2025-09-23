@@ -6,8 +6,8 @@
   "types": "cdk/dist/types/app.d.ts",
   "scripts": {
     "clean": "rm -rf build cdk/dist cdk/cdk.out node_modules",
-    "lint": "eslint --cache cdk/lib cdk/test && prettier --list-different --cache ./cdk/.",
-    "format": "eslint --fix --cache cdk/lib cdk/test && prettier --write --cache ./cdk/.",
+    "lint": "eslint --cache cdk/lib tests/cdk && prettier --list-different --cache ./cdk/.",
+    "format": "eslint --fix --cache cdk/lib tests/cdk && prettier --write --cache ./cdk/.",
     "prebuild": "npm run format",
     "build": "tsc",
     "watch": "tsc -w",

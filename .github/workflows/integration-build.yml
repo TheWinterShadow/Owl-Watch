@@ -82,7 +82,7 @@ jobs:
       - name: Run mypy
         run: |
           echo "Running mypy..."
-          hatch run mypy ./integration_tests
+          hatch run dev:mypy ./integration_tests
 
   unitTests:
     name: 'Run Unit Tests'
@@ -104,4 +104,4 @@ jobs:
       - name: Run unit tests
         run: |
           echo "Running unit tests..."
-          hatch run test
+          hatch test tests/integration_tests

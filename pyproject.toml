@@ -2,12 +2,15 @@
 isort = "python -m isort {args}"
 black = "python -m black {args}"
 flake8 = "python -m flake8 {args}"
+mypy = "python -m mypy {args}"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
 [tool.hatch.build]
 directory = "execution/dist"
+
 [tool.hatch.envs.default.scripts]
 pre-build = [
     "isort execution/src execution/tests",
@@ -39,7 +42,6 @@ dependencies = [
     "isort",
     "black",
     "pytest>=7.0.0",
-    "pytest-cov>=4.0.0",
     "flake8>=6.0.0",
     "mypy>=1.0.0",
     "pre-commit>=3.0.0",
@@ -47,17 +49,21 @@ dependencies = [
     "moto",
     "pytest-asyncio>=0.21.0",
     "pytest-mock>=3.10.0",
+    "pytest-cov",
 ]
 
 [tool.hatch.envs.test]
 dependencies = [
-    "pytest>=7.0.0",
-    "pytest-cov>=4.0.0",
-    "moto",
+    "pytest",
+    "pytest-cov",
+    "moto[glue]==4.1.14",
     "pytest-asyncio>=0.21.0",
     "pytest-mock>=3.10.0",
+    "openapi-spec-validator",
+    "docker",
+    "boto3",
 ]
-command = "pytest"
+
 
 [project]
 name = "owl-watch"
@@ -78,6 +84,10 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
 ]
 requires-python = ">=3.9"
+dependencies = [
+    "boto3",
+    "moto[glue]==4.1.14"
+]
 
 [tool.setuptools.packages.find]
 where = ["execution"]
@@ -103,11 +113,10 @@ disallow_untyped_defs = true
 
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["execution/tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
-addopts = "--cov=src --cov-report=html --cov-report=term-missing"
 
 [tool.hatch.build.targets.wheel]
 packages = ["execution/src"]

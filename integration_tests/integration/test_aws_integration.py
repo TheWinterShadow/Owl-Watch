@@ -3,7 +3,6 @@
 import boto3
 import pytest
 from moto import mock_apigateway, mock_lambda
-from owl_watch.core.monitor import Monitor
 
 
 @mock_lambda

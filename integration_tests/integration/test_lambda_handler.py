@@ -4,7 +4,7 @@ import json
 from unittest.mock import MagicMock
 
 import pytest
-from owl_watch.main import handler
+from execution.src.ml.bedrock_processor import handler
 
 
 class TestLambdaHandler:
