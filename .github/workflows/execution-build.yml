@@ -24,7 +24,7 @@ jobs:
           pip install hatch
       - name: Build the project
         run: |
-          hatch pre-build && hatch build
+          hatch run dev:pre-build && hatch build
 
   lintingChecks:
     name: 'Run Linting Checks'
