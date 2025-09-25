@@ -7,9 +7,9 @@ from typing import Any, Dict
 import boto3
 
 bedrock = boto3.client(
-    "bedrock-runtime", region_name=os.environ.get("AWS_DEFAULT_REGION", "us-east-1"))
-s3 = boto3.client("s3", region_name=os.environ.get(
-    "AWS_DEFAULT_REGION", "us-east-1"))
+    "bedrock-runtime", region_name=os.environ.get("AWS_DEFAULT_REGION", "us-east-1")
+)
+s3 = boto3.client("s3", region_name=os.environ.get("AWS_DEFAULT_REGION", "us-east-1"))
 
 DEFAULT_CLEANED_BUCKET = "test-cleaned-bucket"
 DEFAULT_CURATED_BUCKET = "test-curated-bucket"
