@@ -21,10 +21,10 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install hatch
+            pip install hatch
       - name: Build the project
         run: |
-          hatch run pre-build && hatch build
+          hatch build
 
   lintingChecks:
     name: 'Run Linting Checks'
@@ -39,22 +39,25 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install hatch
+            pip install hatch
+      - name: Create Hatch environment
+        run: |
+          hatch env create
       - name: Build the project
         run: |
-          hatch run pre-build && hatch build
+          hatch build
       - name: Run isort
         run: |
           echo "Running isort..."
-          isort ./execution --check-only --diff
+          hatch run dev:isort ./execution --check-only --diff
       - name: Run black
         run: |
           echo "Running black..."
-          black ./execution --check --diff
+          hatch run dev:black ./execution --check --diff
       - name: Run flake8
         run: |
           echo "Running flake8..."
-          flake8 ./execution
+          hatch run dev:flake8 ./execution
 
   mypyChecks:
     name: 'Run MyPy Checks'
@@ -69,14 +72,17 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install hatch
+            pip install hatch
       - name: Build the project
         run: |
-          hatch run pre-build && hatch build
+          hatch build
+      - name: Create Hatch environment
+        run: |
+          hatch env create
       - name: Run mypy
         run: |
           echo "Running mypy..."
-          mypy ./execution
+          hatch run dev:mypy ./execution
 
   unitTests:
     name: 'Run Unit Tests'
@@ -91,7 +97,10 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install hatch
+            pip install hatch
+      - name: Build the project
+        run: |
+          hatch build
       - name: Run unit tests
         run: |
           echo "Running unit tests..."
