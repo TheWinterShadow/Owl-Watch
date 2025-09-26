@@ -13,8 +13,8 @@ directory = "execution/dist"
 
 [tool.hatch.envs.default.scripts]
 pre-build = [
-    "isort execution/src execution/tests",
-    "black --check execution/src execution/tests",
+    "isort execution/src tests/execution",
+    "black --check execution/src tests/execution",
     "mypy execution/src"
 ]
 
@@ -43,6 +43,7 @@ dependencies = [
     "black",
     "pytest>=7.0.0",
     "flake8>=6.0.0",
+    "flake8-pyproject",
     "mypy>=1.0.0",
     "pre-commit>=3.0.0",
     "types-boto3",
@@ -104,6 +105,9 @@ include = '\.pyi?$'
 profile = "black"
 multi_line_output = 3
 line_length = 88
+
+[tool.flake8]
+max-line-length = 88
 
 [tool.mypy]
 python_version = "3.9"

@@ -1,5 +1,6 @@
 import json
 from typing import Any, Dict
+
 import boto3
 import pytest
 from moto import mock_glue, mock_s3
