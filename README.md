@@ -1,5 +1,7 @@
 # Owl-Watch
 
+[![Execution Build](https://github.com/TheWinterShadow/Owl-Watch/actions/workflows/execution-build.yml/badge.svg)](https://github.com/TheWinterShadow/Owl-Watch/actions/workflows/execution-build.yml) [![CDK Build](https://github.com/TheWinterShadow/Owl-Watch/actions/workflows/cdk-build.yml/badge.svg)](https://github.com/TheWinterShadow/Owl-Watch/actions/workflows/cdk-build.yml) [![Integration Build](https://github.com/TheWinterShadow/Owl-Watch/actions/workflows/integration-build.yml/badge.svg)](https://github.com/TheWinterShadow/Owl-Watch/actions/workflows/integration-build.yml) [![Security Scanning](https://github.com/TheWinterShadow/Owl-Watch/actions/workflows/security-scanning.yml/badge.svg)](https://github.com/TheWinterShadow/Owl-Watch/actions/workflows/security-scanning.yml) [![CICD Pipeline](https://github.com/TheWinterShadow/Owl-Watch/actions/workflows/cicd-pipeline.yml/badge.svg)](https://github.com/TheWinterShadow/Owl-Watch/actions/workflows/cicd-pipeline.yml)
+
 A data engineering pipeline for ingesting, processing, and curating data using AWS Glue, Bedrock, and ML techniques.
 
 ## Project Structure
