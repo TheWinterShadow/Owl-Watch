@@ -1,29 +1,31 @@
-# Owl-Watch Source Code
 
-PySpark ETL jobs and ML processing code for the data engineering pipeline.
+# Owl-Watch Execution
+
+PySpark ETL jobs and ML processing code for the Owl-Watch data pipeline. Includes Glue jobs for data cleaning and sentiment analysis, and a Lambda processor for Bedrock ML integration.
 
 ## Structure
 
-- `etl/` - Glue ETL jobs
-  - `data_cleaning.py` - Data cleaning and transformation
-  - `sentiment_analysis.py` - ML-based sentiment analysis
-- `ml/` - Machine learning processors
-  - `bedrock_processor.py` - AWS Bedrock integration
-- `scripts/` - Utility scripts
-  - `upload_glue_scripts.py` - Deploy scripts to S3
+- `src/etl/`
+  - `data_cleaning.py` - Glue ETL job for data cleaning and transformation
+  - `sentiment_analysis.py` - Glue ETL job for sentiment analysis using ML
+- `src/ml/`
+  - `bedrock_processor.py` - Lambda function for Bedrock AI processing
 
 ## Pipeline Flow
 
-1. **Raw Data** → S3 Raw Bucket
-2. **Data Cleaning** → Glue ETL Job → S3 Cleaned Bucket  
-3. **ML Processing** → Sentiment Analysis + Bedrock → S3 Curated Bucket
+1. **Raw Data** uploaded to S3 Raw Bucket
+2. **Data Cleaning** via Glue ETL job → S3 Cleaned Bucket
+3. **ML Processing** (Sentiment Analysis, Bedrock Lambda) → S3 Curated Bucket
 
 ## Usage
 
 ### Deploy Glue Scripts
-Upload your Glue scripts to S3 manually or with a custom script as needed.
+Scripts in `src/etl/` are deployed to S3 by the CDK stack. You can also upload manually if needed.
+
+### Run ETL Jobs
+Glue jobs are triggered by pipeline events or can be run manually in AWS Glue.
 
 ### Run Unit Tests
 ```bash
-hatch test
+hatch run test
 ```

@@ -1,33 +1,33 @@
 # Owl-Watch CDK
 
-AWS CDK infrastructure for the Owl-Watch data engineering pipeline.
+
+AWS CDK (TypeScript) infrastructure for the Owl-Watch data engineering pipeline. Defines S3 buckets, Glue jobs, Bedrock integration, and monitoring resources.
 
 ## Structure
 
-- `lib/stacks/` - Infrastructure stacks (Data, ML, Monitoring)
-- `lib/constructs/` - Reusable CDK constructs
+- `lib/stacks/` - Infrastructure stacks:
+	- `dataStack.ts` - S3 buckets (raw, cleaned, curated), initial asset deployment
+	- `glueStack.ts` - Glue jobs, crawlers, IAM roles
+	- `monitoringStack.ts` - CloudWatch dashboards, alarms, metrics
+- `lib/utils/` - Asset creation utilities (`createAsset.ts`, `types.ts`)
 
 ## Stacks
 
 ### DataStack
+- S3 buckets for raw, cleaned, and curated data
+- Lifecycle rules for data retention
+- Deploys ETL scripts to S3 for Glue jobs
 
-- S3 buckets (raw, cleaned, curated)
-- Glue ETL jobs and database
-- EventBridge rules for automation
-
-### MLStack
-
-- Bedrock integration for AI processing
-- Sentiment analysis Glue jobs
-- Lambda functions for ML workflows
+### GlueStack
+- Glue jobs for ETL and ML processing
+- Glue crawlers for schema discovery
+- IAM roles for Glue
 
 ### MonitoringStack
-
 - CloudWatch dashboards and alarms
-- SNS notifications
-- Pipeline monitoring metrics
+- S3, Lambda, and Glue job monitoring
 
-## Commands
+## Deployment Commands
 
 ```bash
 # Install dependencies
@@ -37,8 +37,8 @@ npm install
 npm run build
 
 # Deploy all stacks
-npm run deploy -- --all
-
+cdk deploy --all
+```
 # Deploy specific stack
 npm run deploy -- OwlWatchDataStack
 
