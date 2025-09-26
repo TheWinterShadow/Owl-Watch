@@ -1,0 +1,88 @@
+name: CICD Pipeline
+
+on:
+  workflow_run:
+    workflows: ["cdk-build", "execution-build", "integration-build"]
+    types:
+      - completed 
+    branches:
+      - main
+
+jobs:
+  codeBuild:
+    name: 'Build Code with Node'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ID_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_KEY_SECRET }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install dependencies
+        run: |
+          npm install
+      - name: Build the project
+        run: |
+          npm run build
+
+  deployBeta:
+    name: 'Deploy stacks to beta environment'
+    needs: codeBuild
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      # AWS credentials not required for linting
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install dependencies
+        run: |
+          npm install
+      - name: CDK Stack List
+        run: |
+          echo "Running cdk list..."
+          cd cdk && npx cdk list
+      - name: Run CDK diff
+        run: |
+          echo "Running CDK diff..."
+          cd cdk && npx cdk diff    
+      - name: Run CDK synth
+        run: |
+          echo "Running CDK synth..."
+          cd cdk && npx cdk synth
+      - name: CDK Deploy Beta
+        run: |
+          echo "Running CDK Deploy for Beta stacks"
+          cdk deploy *-beta
+
+  runIntegTests:
+    name: Run integration tests on beta
+    runs-on: ubuntu-latest
+    needs: deployBeta
+    steps:
+      - name: Drop File
+        run: |
+          echo "TODO"
