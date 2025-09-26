@@ -1,5 +1,6 @@
 # Owl-Watch CDK
 
+[![CDK Build](https://github.com/TheWinterShadow/Owl-Watch/actions/workflows/cdk-build.yml/badge.svg)](https://github.com/TheWinterShadow/Owl-Watch/actions/workflows/cdk-build.yml)
 
 AWS CDK (TypeScript) infrastructure for the Owl-Watch data engineering pipeline. Defines S3 buckets, Glue jobs, Bedrock integration, and monitoring resources.
 

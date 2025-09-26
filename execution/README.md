@@ -1,6 +1,8 @@
 
 # Owl-Watch Execution
 
+[![Execution Build](https://github.com/TheWinterShadow/Owl-Watch/actions/workflows/execution-build.yml/badge.svg)](https://github.com/TheWinterShadow/Owl-Watch/actions/workflows/execution-build.yml)
+
 PySpark ETL jobs and ML processing code for the Owl-Watch data pipeline. Includes Glue jobs for data cleaning and sentiment analysis, and a Lambda processor for Bedrock ML integration.
 
 ## Structure

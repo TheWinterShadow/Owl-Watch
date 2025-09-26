@@ -1,6 +1,8 @@
 
 # Owl-Watch Integration Tests
 
+[![Integration Build](https://github.com/TheWinterShadow/Owl-Watch/actions/workflows/integration-build.yml/badge.svg)](https://github.com/TheWinterShadow/Owl-Watch/actions/workflows/integration-build.yml)
+
 Integration and end-to-end tests for the Owl-Watch data pipeline. Uses `pytest` and `moto` to mock AWS services.
 
 ## Structure
