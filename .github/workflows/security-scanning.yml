@@ -2,7 +2,7 @@ name: Security Scanning
 
 on:
   workflow_run:
-    workflows: ["cdk-build", "execution-build", "integration-build"]
+    workflows: ["CDK Build", "Execution Build", "Integration Build"]
     types:
       - completed 
     branches:
