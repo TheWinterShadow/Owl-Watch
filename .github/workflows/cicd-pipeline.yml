@@ -86,3 +86,42 @@ jobs:
       - name: Drop File
         run: |
           echo "TODO"
+
+  deployProd:
+    name: 'Deploy stacks to prod environment'
+    needs: runIntegTests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      # AWS credentials not required for linting
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install dependencies
+        run: |
+          npm install
+      - name: CDK Stack List
+        run: |
+          echo "Running cdk list..."
+          cd cdk && npx cdk list
+      - name: Run CDK diff
+        run: |
+          echo "Running CDK diff..."
+          cd cdk && npx cdk diff    
+      - name: Run CDK synth
+        run: |
+          echo "Running CDK synth..."
+          cd cdk && npx cdk synth
+      - name: CDK Deploy Prod
+        run: |
+          echo "Running CDK Deploy for Beta stacks"
+          cdk deploy *-prod
