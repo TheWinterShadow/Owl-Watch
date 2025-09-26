@@ -118,7 +118,7 @@ disallow_untyped_defs = true
 exclude = "execution/docs/.*|docs/.*"
 
 [tool.pytest.ini_options]
-testpaths = ["execution/tests"]
+testpaths = ["tests/execution"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
