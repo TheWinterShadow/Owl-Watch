@@ -2,7 +2,7 @@ name: CICD Pipeline
 
 on:
   workflow_run:
-    workflows: ["cdk-build", "execution-build", "integration-build"]
+    workflows: ["security-scanning"]
     types:
       - completed 
     branches:
