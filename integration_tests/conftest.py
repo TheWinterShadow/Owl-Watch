@@ -1,6 +1,5 @@
 """Pytest configuration for data pipeline tests."""
 
-import json
 from typing import Any, Dict
 
 import boto3

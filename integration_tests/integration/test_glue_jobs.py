@@ -2,10 +2,6 @@
 
 import json
 
-import boto3
-import pytest
-from moto import mock_glue, mock_s3
-
 
 class TestGlueJobs:
     """Test Glue ETL job functionality."""

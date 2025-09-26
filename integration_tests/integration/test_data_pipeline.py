@@ -1,11 +1,6 @@
 """Integration tests for the complete data pipeline."""
 
 import json
-import time
-
-import boto3
-import pytest
-from moto import mock_glue, mock_s3
 
 
 class TestDataPipeline:

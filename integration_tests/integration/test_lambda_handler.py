@@ -3,7 +3,6 @@
 import json
 from unittest.mock import MagicMock
 
-import pytest
 from execution.src.ml.bedrock_processor import handler
 
 
