@@ -2,7 +2,7 @@
 isort = "python -m isort {args}"
 black = "python -m black {args}"
 flake8 = "python -m flake8 {args}"
-mypy = "python -m mypy {args}"
+mypy = "python -m mypy --exclude 'execution/docs' {args}"
 
 [build-system]
 requires = ["hatchling"]
@@ -114,7 +114,7 @@ python_version = "3.9"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
-
+exclude = "execution/docs/.*|docs/.*"
 
 [tool.pytest.ini_options]
 testpaths = ["execution/tests"]

@@ -25,5 +25,5 @@ Upload your Glue scripts to S3 manually or with a custom script as needed.
 
 ### Run Unit Tests
 ```bash
-hatch run test
+hatch test
 ```
