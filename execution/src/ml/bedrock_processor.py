@@ -6,19 +6,30 @@ from typing import Any, Dict
 
 import boto3
 
-bedrock = boto3.client("bedrock-runtime")
-s3 = boto3.client("s3")
+bedrock = boto3.client(
+    "bedrock-runtime", region_name=os.environ.get("AWS_DEFAULT_REGION", "us-east-1")
+)
+s3 = boto3.client("s3", region_name=os.environ.get("AWS_DEFAULT_REGION", "us-east-1"))
 
-CLEANED_BUCKET = os.environ["CLEANED_BUCKET"]
-CURATED_BUCKET = os.environ["CURATED_BUCKET"]
+DEFAULT_CLEANED_BUCKET = "test-cleaned-bucket"
+DEFAULT_CURATED_BUCKET = "test-curated-bucket"
+CLEANED_BUCKET = os.environ.get("CLEANED_BUCKET", DEFAULT_CLEANED_BUCKET)
+CURATED_BUCKET = os.environ.get("CURATED_BUCKET", DEFAULT_CURATED_BUCKET)
 
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     """Process data using Bedrock AI models."""
 
     try:
+        # Validate event structure
+        if not event.get("Records") or not isinstance(event["Records"], list):
+            return {
+                "statusCode": 500,
+                "body": json.dumps({"error": "Invalid event structure"}),
+            }
+
         # Get data from S3
-        for record in event.get("Records", []):
+        for record in event["Records"]:
             bucket = record["s3"]["bucket"]["name"]
             key = record["s3"]["object"]["key"]
 

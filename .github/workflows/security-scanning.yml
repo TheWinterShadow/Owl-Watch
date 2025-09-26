@@ -1,0 +1,83 @@
+name: Security Scanning
+
+on:
+  workflow_run:
+    workflows: ["cdk-build", "execution-build", "integration-build"]
+    types:
+      - completed 
+    branches:
+      - main
+
+jobs:
+  executionSecurityScan:
+    name: 'Run Security Scan on Execution Code'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+            pip install hatch
+      - name: Build the project
+        run: |
+          hatch build
+      - name: Run Bandit Scan
+        run: |
+          hatch run dev:bandit -r ./execution
+
+  integrationTestsSecurityScan:
+    name: 'Run Security Scan on Integration Tests Code'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+            pip install hatch
+      - name: Build the project
+        run: |
+          hatch build
+      - name: Run Bandit Scan
+        run: |
+          hatch run dev:bandit -r ./integration_tests
+      
+  cdkSecurityScan:
+    name: 'Run Security Scan on CDK Code'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install dependencies
+        run: |
+          npm install
+      - name: Build the project
+        run: |
+          npm run build
+      - name: Run CFN Nag Scan
+        uses: stelligent/cfn_nag@v0.8.10
+        with:
+          input_path: ./cdk
+          extra_args: --fail-on-warnings -o json
+
+  

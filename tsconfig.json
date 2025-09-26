@@ -20,7 +20,8 @@
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
     "typeRoots": ["./node_modules/@types"],
-    "rootDir": "./cdk"
+    "rootDir": "."
   },
-  "exclude": ["cdk/cdk.out", "cdk/build", "node_modules", "cdk/dist"]
+  "include": ["cdk/**/*", "tests/cdk/**/*"],
+  "exclude": ["node_modules", "cdk/dist", "cdk/cdk.out", "cdk/build"]
 }

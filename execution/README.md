@@ -23,7 +23,7 @@ PySpark ETL jobs and ML processing code for the data engineering pipeline.
 ### Deploy Glue Scripts
 Upload your Glue scripts to S3 manually or with a custom script as needed.
 
-### Run Integration Tests
+### Run Unit Tests
 ```bash
-hatch run test
+hatch test
 ```

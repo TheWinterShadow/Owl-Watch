@@ -1,10 +1,50 @@
-"""Pytest configuration for data pipeline tests."""
-
+import json
 from typing import Any, Dict
 
 import boto3
 import pytest
 from moto import mock_glue, mock_s3
+
+
+@pytest.fixture
+def lambda_event():
+    """Mocked Lambda event for testing."""
+    return {
+        "Records": [
+            {
+                "s3": {
+                    "bucket": {"name": "test-cleaned-bucket"},
+                    "object": {"key": "test-key.json"},
+                }
+            }
+        ]
+    }
+
+
+@pytest.fixture
+def monitor():
+    """Mocked monitor object for testing."""
+
+    class DummyMonitor:
+        def run(self, *args, **kwargs):
+            return True
+
+    return DummyMonitor()
+
+
+@pytest.fixture
+def sample_event_data():
+    """Mocked sample event data for end-to-end monitoring test."""
+    return {
+        "Records": [
+            {
+                "s3": {
+                    "bucket": {"name": "test-cleaned-bucket"},
+                    "object": {"key": "test-key.json"},
+                }
+            }
+        ]
+    }
 
 
 @pytest.fixture
@@ -53,8 +93,6 @@ def test_buckets(s3_client):
         "cleaned": "test-owl-watch-cleaned",
         "curated": "test-owl-watch-curated",
     }
-
     for bucket_name in buckets.values():
         s3_client.create_bucket(Bucket=bucket_name)
-
     return buckets

@@ -4,7 +4,6 @@ AWS CDK infrastructure for the Owl-Watch data engineering pipeline.
 
 ## Structure
 
-- `bin/` - CDK app entry point
 - `lib/stacks/` - Infrastructure stacks (Data, ML, Monitoring)
 - `lib/constructs/` - Reusable CDK constructs
 

@@ -2,7 +2,7 @@ name: CDK Build
 
 on:
   push:
-    branches: ["main"]
+    branches: ["*"]
     paths:
       - 'cdk/**'
       - '.github/workflows/cdk-build.yml'
@@ -14,6 +14,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ID_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_KEY_SECRET }}
+          aws-region: ${{ secrets.AWS_REGION }}
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -38,6 +44,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      # AWS credentials not required for linting
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -63,6 +70,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      # AWS credentials not required for unit tests
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -88,6 +96,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ID_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_KEY_SECRET }}
+          aws-region: ${{ secrets.AWS_REGION }}
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -105,7 +119,7 @@ jobs:
       - name: List CDK stacks
         run: |
           echo "Listing CDK stacks..."
-          npx cdk list
+          cd cdk && npx cdk list
 
   cdkDiff:
     name: 'CDK Diff'
@@ -113,6 +127,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ID_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_KEY_SECRET }}
+          aws-region: ${{ secrets.AWS_REGION }}
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -130,7 +150,7 @@ jobs:
       - name: Run CDK diff
         run: |
           echo "Running CDK diff..."
-          npx cdk diff
+          cd cdk && npx cdk diff
 
   cdkSynth:
     name: 'CDK Synth'
@@ -138,6 +158,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ID_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_KEY_SECRET }}
+          aws-region: ${{ secrets.AWS_REGION }}
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -155,4 +181,4 @@ jobs:
       - name: Run CDK synth
         run: |
           echo "Running CDK synth..."
-          npx cdk synth
+          cd cdk && npx cdk synth
