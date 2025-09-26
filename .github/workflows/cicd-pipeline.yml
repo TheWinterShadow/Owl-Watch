@@ -123,5 +123,5 @@ jobs:
           cd cdk && npx cdk synth
       - name: CDK Deploy Prod
         run: |
-          echo "Running CDK Deploy for Beta stacks"
+          echo "Running CDK Deploy for Prod stacks"
           cdk deploy *-prod
