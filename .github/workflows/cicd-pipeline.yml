@@ -16,19 +16,19 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4.0.2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ID_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_KEY_SECRET }}
           aws-region: ${{ secrets.AWS_REGION }}
       - name: Set up Node.js
-        uses: actions/setup-node@v4.0.2
+        uses: actions/setup-node@v4
         with:
           node-version: "20"
       - name: Cache node modules
-        uses: actions/cache@v4.0.2
+        uses: actions/cache@v4
         with:
           path: |
             ~/.npm
@@ -49,7 +49,7 @@ jobs:
       - name: Build the project
         run: npm run build
       - name: Upload build output
-        uses: actions/upload-artifact@v4.3.1
+        uses: actions/upload-artifact@v4
         with:
           name: node-build-output
           path: |
@@ -61,7 +61,7 @@ jobs:
             npm-debug.log*
       - name: Add failure summary
         if: failure()
-        uses: actions/github-script@v7.0.1
+        uses: actions/github-script@v7
         with:
           script: |
             core.summary.addHeading('❌ codeBuild failed')
@@ -76,14 +76,14 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4
       # AWS credentials not required for linting
       - name: Set up Node.js
-        uses: actions/setup-node@v4.0.2
+        uses: actions/setup-node@v4
         with:
           node-version: "20"
       - name: Cache node modules
-        uses: actions/cache@v4.0.2
+        uses: actions/cache@v4
         with:
           path: |
             ~/.npm
@@ -118,7 +118,7 @@ jobs:
           echo "Running CDK Deploy for Beta stacks"
           cdk deploy *-beta
       - name: Upload CDK synth output
-        uses: actions/upload-artifact@v4.3.1
+        uses: actions/upload-artifact@v4
         with:
           name: cdk-synth-output-beta
           path: |
@@ -126,7 +126,7 @@ jobs:
             logs/
       - name: Add failure summary
         if: failure()
-        uses: actions/github-script@v7.0.1
+        uses: actions/github-script@v7
         with:
           script: |
             core.summary.addHeading('❌ deployBeta failed')
@@ -143,13 +143,13 @@ jobs:
       - name: Drop File
         run: echo "TODO"
       - name: Upload integration test logs
-        uses: actions/upload-artifact@v4.3.1
+        uses: actions/upload-artifact@v4
         with:
           name: integration-test-logs
           path: logs/
       - name: Add failure summary
         if: failure()
-        uses: actions/github-script@v7.0.1
+        uses: actions/github-script@v7
         with:
           script: |
             core.summary.addHeading('❌ runIntegTests failed')
@@ -164,14 +164,14 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4
       # AWS credentials not required for linting
       - name: Set up Node.js
-        uses: actions/setup-node@v4.0.2
+        uses: actions/setup-node@v4
         with:
           node-version: "20"
       - name: Cache node modules
-        uses: actions/cache@v4.0.2
+        uses: actions/cache@v4
         with:
           path: |
             ~/.npm
@@ -206,7 +206,7 @@ jobs:
           echo "Running CDK Deploy for Prod stacks"
           cdk deploy *-prod
       - name: Upload CDK synth output (prod)
-        uses: actions/upload-artifact@v4.3.1
+        uses: actions/upload-artifact@v4
         with:
           name: cdk-synth-output-prod
           path: |
@@ -214,7 +214,7 @@ jobs:
             logs/
       - name: Add failure summary
         if: failure()
-        uses: actions/github-script@v7.0.1
+        uses: actions/github-script@v7
         with:
           script: |
             core.summary.addHeading('❌ deployProd failed')
