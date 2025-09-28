@@ -41,7 +41,7 @@ npm run build
 cdk deploy --all
 ```
 # Deploy specific stack
-npm run deploy -- OwlWatchDataStack
+npm run deploy -- STACK_NAME
 
 # Destroy all stacks
 npm run destroy -- --all

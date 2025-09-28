@@ -18,7 +18,7 @@ Integration and end-to-end tests for the Owl-Watch data pipeline. Uses `pytest` 
 
 From the project root:
 ```bash
-hatch run test
+hatch test
 ```
 
 ## Test Scenarios

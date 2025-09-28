@@ -29,5 +29,5 @@ Glue jobs are triggered by pipeline events or can be run manually in AWS Glue.
 
 ### Run Unit Tests
 ```bash
-hatch run test
+hatch test
 ```
