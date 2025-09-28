@@ -17,12 +17,13 @@ class TestLambdaHandler:
 
         response = handler(lambda_event, context)
 
-        assert response["statusCode"] == 200
-        assert "application/json" in response["headers"]["Content-Type"]
+        assert response["statusCode"] == 200  # nosec
+        # nosec
+        assert "application/json" in response["headers"]["Content-Type"]    # nosec
 
         body = json.loads(response["body"])
-        assert "event_id" in body
-        assert body["status"] == "processed"
+        assert "event_id" in body  # nosec
+        assert body["status"] == "processed"  # nosec
 
     def test_handler_error_handling(self):
         """Test Lambda handler error handling."""
@@ -31,6 +32,6 @@ class TestLambdaHandler:
 
         response = handler(invalid_event, context)
 
-        assert response["statusCode"] == 500
+        assert response["statusCode"] == 500  # nosec
         body = json.loads(response["body"])
-        assert "error" in body
+        assert "error" in body  # nosec

@@ -18,9 +18,9 @@ class TestDataPipeline:
 
         # Verify file exists in raw bucket
         response = s3_client.list_objects_v2(Bucket=test_buckets["raw"])
-        assert "Contents" in response
-        assert len(response["Contents"]) == 1
-        assert response["Contents"][0]["Key"] == "input/sample_data.json"
+        assert "Contents" in response  # nosec
+        assert len(response["Contents"]) == 1  # nosec
+        assert response["Contents"][0]["Key"] == "input/sample_data.json"   # nosec
 
     def test_glue_job_processing(self, glue_client, test_buckets):
         """Test Glue job creation and configuration."""
@@ -43,8 +43,9 @@ class TestDataPipeline:
 
         # Verify job was created
         response = glue_client.get_job(JobName=job_name)
-        assert response["Job"]["Name"] == job_name
+        assert response["Job"]["Name"] == job_name  # nosec
         assert (
+            # nosec
             response["Job"]["DefaultArguments"]["--raw-bucket"] == test_buckets["raw"]
         )
 
@@ -75,7 +76,7 @@ class TestDataPipeline:
         # Validate required fields
         required_fields = ["id", "text", "timestamp"]
         is_valid = all(field in data for field in required_fields)
-        assert is_valid
+        assert is_valid  # nosec
 
     def test_end_to_end_pipeline(self, s3_client, test_buckets, sample_data):
         """Test the complete end-to-end pipeline flow."""
@@ -116,12 +117,14 @@ class TestDataPipeline:
 
         # Verify data exists in all three buckets
         raw_objects = s3_client.list_objects_v2(Bucket=test_buckets["raw"])
-        cleaned_objects = s3_client.list_objects_v2(Bucket=test_buckets["cleaned"])
-        curated_objects = s3_client.list_objects_v2(Bucket=test_buckets["curated"])
+        cleaned_objects = s3_client.list_objects_v2(
+            Bucket=test_buckets["cleaned"])
+        curated_objects = s3_client.list_objects_v2(
+            Bucket=test_buckets["curated"])
 
-        assert "Contents" in raw_objects
-        assert "Contents" in cleaned_objects
-        assert "Contents" in curated_objects
+        assert "Contents" in raw_objects  # nosec
+        assert "Contents" in cleaned_objects  # nosec
+        assert "Contents" in curated_objects  # nosec
 
         # Verify final curated data has all expected fields
         final_response = s3_client.get_object(
@@ -129,6 +132,6 @@ class TestDataPipeline:
         )
         final_data = json.loads(final_response["Body"].read())
 
-        assert "sentiment_score" in final_data
-        assert "sentiment_label" in final_data
-        assert final_data["sentiment_label"] == "positive"
+        assert "sentiment_score" in final_data  # nosec
+        assert "sentiment_label" in final_data  # nosec
+        assert final_data["sentiment_label"] == "positive"  # nosec

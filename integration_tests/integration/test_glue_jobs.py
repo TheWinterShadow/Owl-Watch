@@ -33,10 +33,10 @@ class TestGlueJobs:
         response = glue_client.get_job(JobName=job_name)
         job = response["Job"]
 
-        assert job["Name"] == job_name
-        assert job["Command"]["Name"] == "glueetl"
-        assert job["GlueVersion"] == "4.0"
-        assert job["DefaultArguments"]["--raw-bucket"] == "test-raw-bucket"
+    assert job["Name"] == job_name  # nosec
+    assert job["Command"]["Name"] == "glueetl"  # nosec
+    assert job["GlueVersion"] == "4.0"  # nosec
+    assert job["DefaultArguments"]["--raw-bucket"] == "test-raw-bucket"  # nosec
 
     def test_glue_job_run_simulation(self, glue_client, s3_client, test_buckets):
         """Test simulating a Glue job run."""
@@ -62,12 +62,13 @@ class TestGlueJobs:
         job_run_id = run_response["JobRunId"]
 
         # Verify job run was started
-        assert job_run_id is not None
+        assert job_run_id is not None   # nosec
 
         # Get job run details
-        run_details = glue_client.get_job_run(JobName=job_name, RunId=job_run_id)
-        assert run_details["JobRun"]["JobName"] == job_name
-        assert run_details["JobRun"]["Id"] == job_run_id
+        run_details = glue_client.get_job_run(
+            JobName=job_name, RunId=job_run_id)
+        assert run_details["JobRun"]["JobName"] == job_name  # nosec
+        assert run_details["JobRun"]["Id"] == job_run_id    # nosec
 
     def test_glue_database_creation(self, glue_client):
         """Test creating Glue database."""
@@ -85,8 +86,8 @@ class TestGlueJobs:
         response = glue_client.get_database(Name=database_name)
         db = response["Database"]
 
-        assert db["Name"] == database_name
-        assert "Test database" in db["Description"]
+        assert db["Name"] == database_name  # nosec
+        assert "Test database" in db["Description"] # nosec
 
     def test_data_processing_simulation(self, s3_client, test_buckets, sample_data):
         """Test simulating the data processing that would happen in Glue."""
@@ -115,7 +116,8 @@ class TestGlueJobs:
 
         # Simulate sentiment analysis
         if "text" in sample_data:
-            sentiment_score = 0.8 if "positive" in sample_data["text"].lower() else 0.2
+            sentiment_score = 0.8 if "positive" in sample_data["text"].lower(
+            ) else 0.2
             sentiment_label = "positive" if sentiment_score > 0.5 else "negative"
         else:
             sentiment_score = 0.5
@@ -144,7 +146,7 @@ class TestGlueJobs:
 
         result_data = json.loads(curated_response["Body"].read())
 
-        assert "sentiment_score" in result_data
-        assert "sentiment_label" in result_data
-        assert result_data["sentiment_label"] == sentiment_label
-        assert "ml_processed_timestamp" in result_data
+        assert "sentiment_score" in result_data  # nosec
+        assert "sentiment_label" in result_data  # nosec
+        assert result_data["sentiment_label"] == sentiment_label  # nosec
+        assert "ml_processed_timestamp" in result_data  # nosec
