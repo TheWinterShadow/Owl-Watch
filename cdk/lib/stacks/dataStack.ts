@@ -33,7 +33,7 @@ export class DataStack extends Stack {
     ]);
 
     new BucketDeployment(this, 'DeployInitialData', {
-      sources: [Source.asset(path.resolve(__dirname, '../../../execution/src/etl'))],
+      sources: [Source.asset(path.resolve(__dirname, '../../../execution/etl'))],
       destinationBucket: this.dataBucket,
       destinationKeyPrefix: 'glue_assets/etl_scripts/', // optional prefix in destination bucket
     });

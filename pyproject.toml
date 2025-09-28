@@ -13,9 +13,12 @@ directory = "execution/dist"
 
 [tool.hatch.envs.default.scripts]
 pre-build = [
-    "isort execution/src tests/execution",
-    "black --check execution/src tests/execution",
-    "mypy execution/src"
+    "isort execution/etl execution/ml tests/execution integration_tests tests/integration_tests",
+    "black --check execution/etl execution/ml tests/execution integration_tests tests/integration_tests",
+    "mypy execution/etl execution/ml tests/execution integration_tests tests/integration_tests",
+    "flake8 execution/etl execution/ml tests/execution integration_tests tests/integration_tests",
+    "bandit -r execution/",
+    "bandit -r integration_tests/",
 ]
 
 # Sphinx documentation build script
@@ -124,4 +127,4 @@ python_classes = ["Test*"]
 python_functions = ["test_*"]
 
 [tool.hatch.build.targets.wheel]
-packages = ["execution/src"]
+packages = ["execution/etl", "execution/ml"]

@@ -16,7 +16,8 @@ class TestAWSIntegration:
 
         # This would be a more comprehensive test in a real scenario
         # For now, just test that we can create a mock Lambda client
-    assert lambda_client is not None  # nosec
+
+        assert lambda_client is not None  # nosec
 
     def test_api_gateway_integration(self):
         """Test API Gateway integration simulation."""
@@ -24,7 +25,8 @@ class TestAWSIntegration:
 
         # This would test actual API Gateway integration
         # For now, just test that we can create a mock API Gateway client
-    assert api_client is not None  # nosec
+
+        assert api_client is not None  # nosec
 
     @pytest.mark.slow
     def test_end_to_end_monitoring(self, monitor, sample_event_data):
@@ -33,4 +35,5 @@ class TestAWSIntegration:
         # involving actual AWS resources in a test environment
 
         result = monitor.process_event(sample_event_data)
-    assert result["status"] == "processed"  # nosec
+
+        assert result["status"] == "processed"  # nosec

@@ -15,8 +15,8 @@ Owl-Watch is a data engineering pipeline for ingesting, processing, and curating
    - `lib/stacks/` - Data, Glue, and Monitoring stacks
    - `lib/utils/` - Asset and resource creation utilities
 - **`execution/`** - PySpark ETL and ML code (Python)
-   - `src/etl/` - Glue ETL jobs: `data_cleaning.py`, `sentiment_analysis.py`
-   - `src/ml/` - Bedrock Lambda processor
+   - `etl/` - Glue ETL jobs: `data_cleaning.py`, `sentiment_analysis.py`
+   - `ml/` - Bedrock Lambda processor
 - **`integration_tests/`** - Integration tests (Python, pytest)
    - `integration/` - End-to-end and component tests
    - `fixtures/sample_data/` - Example test data
@@ -36,16 +36,16 @@ Owl-Watch is a data engineering pipeline for ingesting, processing, and curating
    npm install
    npm run build
    cdk deploy --all
-   ```
 
-2. **Run integration tests:**
-   ```bash
-   hatch run test
-   ```
-
-## Pipeline Flow
-
-1. **Raw data** uploaded to S3 Raw Bucket
+   **`cdk/`** - AWS CDK infrastructure (TypeScript)
+      - `lib/stacks/` - Data, Glue, and Monitoring stacks
+      - `lib/utils/` - Asset and resource creation utilities
+   **`execution/`** - PySpark ETL and ML code (Python)
+      - `etl/` - Glue ETL jobs: `data_cleaning.py`, `sentiment_analysis.py`
+      - `ml/` - Bedrock Lambda processor
+   **`integration_tests/`** - Integration tests (Python, pytest)
+      - `integration/` - End-to-end and component tests
+      - `fixtures/sample_data/` - Example test data
 2. **Glue ETL Job** performs data cleaning and transformation
 3. **Cleaned data** stored in S3 Cleaned Bucket
 4. **ML Processing** (Bedrock, Sentiment Analysis) produces curated data in S3 Curated Bucket

@@ -3,7 +3,7 @@
 import json
 from unittest.mock import MagicMock
 
-from execution.src.ml.bedrock_processor import handler
+from execution.ml.bedrock_processor import handler
 
 
 class TestLambdaHandler:
@@ -18,8 +18,7 @@ class TestLambdaHandler:
         response = handler(lambda_event, context)
 
         assert response["statusCode"] == 200  # nosec
-        # nosec
-        assert "application/json" in response["headers"]["Content-Type"]    # nosec
+        assert "application/json" in response["headers"]["Content-Type"]  # nosec
 
         body = json.loads(response["body"])
         assert "event_id" in body  # nosec

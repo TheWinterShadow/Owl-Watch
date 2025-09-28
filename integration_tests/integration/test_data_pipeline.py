@@ -20,7 +20,7 @@ class TestDataPipeline:
         response = s3_client.list_objects_v2(Bucket=test_buckets["raw"])
         assert "Contents" in response  # nosec
         assert len(response["Contents"]) == 1  # nosec
-        assert response["Contents"][0]["Key"] == "input/sample_data.json"   # nosec
+        assert response["Contents"][0]["Key"] == "input/sample_data.json"  # nosec
 
     def test_glue_job_processing(self, glue_client, test_buckets):
         """Test Glue job creation and configuration."""
@@ -46,7 +46,8 @@ class TestDataPipeline:
         assert response["Job"]["Name"] == job_name  # nosec
         assert (
             # nosec
-            response["Job"]["DefaultArguments"]["--raw-bucket"] == test_buckets["raw"]
+            response["Job"]["DefaultArguments"]["--raw-bucket"]
+            == test_buckets["raw"]
         )
 
     def test_data_quality_validation(self, s3_client, test_buckets, sample_data):
@@ -117,10 +118,8 @@ class TestDataPipeline:
 
         # Verify data exists in all three buckets
         raw_objects = s3_client.list_objects_v2(Bucket=test_buckets["raw"])
-        cleaned_objects = s3_client.list_objects_v2(
-            Bucket=test_buckets["cleaned"])
-        curated_objects = s3_client.list_objects_v2(
-            Bucket=test_buckets["curated"])
+        cleaned_objects = s3_client.list_objects_v2(Bucket=test_buckets["cleaned"])
+        curated_objects = s3_client.list_objects_v2(Bucket=test_buckets["curated"])
 
         assert "Contents" in raw_objects  # nosec
         assert "Contents" in cleaned_objects  # nosec
