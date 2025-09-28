@@ -4,63 +4,103 @@ on:
   workflow_run:
     workflows: ["Security Scanning"]
     types:
-      - completed 
+      - completed
     branches:
       - master
 
 jobs:
   codeBuild:
-    name: 'Build Code with Node'
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    name: Build Code with Node
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.1
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v4.0.2
         with:
           aws-access-key-id: ${{ secrets.AWS_ID_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_KEY_SECRET }}
           aws-region: ${{ secrets.AWS_REGION }}
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4.0.2
         with:
-          node-version: '20'
+          node-version: "20"
       - name: Cache node modules
-        uses: actions/cache@v4
+        uses: actions/cache@v4.0.2
         with:
-          path: ~/.npm
+          path: |
+            ~/.npm
+            node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
+      # Example: Add Python cache if needed in future jobs
+      # - name: Cache pip
+      #   uses: actions/cache@v4.0.2
+      #   with:
+      #     path: ~/.cache/pip
+      #     key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-pip-
       - name: Install dependencies
-        run: |
-          npm install
+        run: npm install
       - name: Build the project
-        run: |
-          npm run build
+        run: npm run build
+      - name: Upload build output
+        uses: actions/upload-artifact@v4.3.1
+        with:
+          name: node-build-output
+          path: |
+            dist/
+            build/
+            .next/
+            cdk.out/
+            logs/
+            npm-debug.log*
+      - name: Add failure summary
+        if: failure()
+        uses: actions/github-script@v7.0.1
+        with:
+          script: |
+            core.summary.addHeading('❌ codeBuild failed')
+            core.summary.addRaw('Check logs and uploaded artifacts for details.')
+            await core.summary.write()
 
   deployBeta:
-    name: 'Deploy stacks to beta environment'
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    name: Deploy stacks to beta environment
     needs: codeBuild
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.1
       # AWS credentials not required for linting
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4.0.2
         with:
-          node-version: '20'
+          node-version: "20"
       - name: Cache node modules
-        uses: actions/cache@v4
+        uses: actions/cache@v4.0.2
         with:
-          path: ~/.npm
+          path: |
+            ~/.npm
+            node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
+      # Example: Add Python cache if needed in future jobs
+      # - name: Cache pip
+      #   uses: actions/cache@v4.0.2
+      #   with:
+      #     path: ~/.cache/pip
+      #     key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-pip-
       - name: Install dependencies
-        run: |
-          npm install
+        run: npm install
       - name: CDK Stack List
         run: |
           echo "Running cdk list..."
@@ -68,7 +108,7 @@ jobs:
       - name: Run CDK diff
         run: |
           echo "Running CDK diff..."
-          cd cdk && npx cdk diff    
+          cd cdk && npx cdk diff
       - name: Run CDK synth
         run: |
           echo "Running CDK synth..."
@@ -77,38 +117,78 @@ jobs:
         run: |
           echo "Running CDK Deploy for Beta stacks"
           cdk deploy *-beta
+      - name: Upload CDK synth output
+        uses: actions/upload-artifact@v4.3.1
+        with:
+          name: cdk-synth-output-beta
+          path: |
+            cdk/cdk.out/
+            logs/
+      - name: Add failure summary
+        if: failure()
+        uses: actions/github-script@v7.0.1
+        with:
+          script: |
+            core.summary.addHeading('❌ deployBeta failed')
+            core.summary.addRaw('Check logs and uploaded artifacts for details.')
+            await core.summary.write()
 
   runIntegTests:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Run integration tests on beta
-    runs-on: ubuntu-latest
     needs: deployBeta
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Drop File
-        run: |
-          echo "TODO"
+        run: echo "TODO"
+      - name: Upload integration test logs
+        uses: actions/upload-artifact@v4.3.1
+        with:
+          name: integration-test-logs
+          path: logs/
+      - name: Add failure summary
+        if: failure()
+        uses: actions/github-script@v7.0.1
+        with:
+          script: |
+            core.summary.addHeading('❌ runIntegTests failed')
+            core.summary.addRaw('Check logs and uploaded artifacts for details.')
+            await core.summary.write()
 
   deployProd:
-    name: 'Deploy stacks to prod environment'
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    name: Deploy stacks to prod environment
     needs: runIntegTests
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.1
       # AWS credentials not required for linting
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4.0.2
         with:
-          node-version: '20'
+          node-version: "20"
       - name: Cache node modules
-        uses: actions/cache@v4
+        uses: actions/cache@v4.0.2
         with:
-          path: ~/.npm
+          path: |
+            ~/.npm
+            node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
+      # Example: Add Python cache if needed in future jobs
+      # - name: Cache pip
+      #   uses: actions/cache@v4.0.2
+      #   with:
+      #     path: ~/.cache/pip
+      #     key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-pip-
       - name: Install dependencies
-        run: |
-          npm install
+        run: npm install
       - name: CDK Stack List
         run: |
           echo "Running cdk list..."
@@ -116,7 +196,7 @@ jobs:
       - name: Run CDK diff
         run: |
           echo "Running CDK diff..."
-          cd cdk && npx cdk diff    
+          cd cdk && npx cdk diff
       - name: Run CDK synth
         run: |
           echo "Running CDK synth..."
@@ -125,3 +205,18 @@ jobs:
         run: |
           echo "Running CDK Deploy for Prod stacks"
           cdk deploy *-prod
+      - name: Upload CDK synth output (prod)
+        uses: actions/upload-artifact@v4.3.1
+        with:
+          name: cdk-synth-output-prod
+          path: |
+            cdk/cdk.out/
+            logs/
+      - name: Add failure summary
+        if: failure()
+        uses: actions/github-script@v7.0.1
+        with:
+          script: |
+            core.summary.addHeading('❌ deployProd failed')
+            core.summary.addRaw('Check logs and uploaded artifacts for details.')
+            await core.summary.write()
