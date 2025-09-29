@@ -1,7 +1,6 @@
 name: Security Scanning
 
 on:
-
   workflow_run:
     workflows: ["Full Build"]
     types:

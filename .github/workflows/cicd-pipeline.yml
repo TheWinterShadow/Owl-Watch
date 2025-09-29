@@ -118,7 +118,7 @@ jobs:
       - name: CDK Deploy Beta
         run: |
           echo "Running CDK Deploy for Beta stacks"
-          cdk deploy *-beta
+          cdk deploy *-Beta
       - name: Upload CDK synth output
         uses: actions/upload-artifact@v4
         with:
@@ -206,7 +206,7 @@ jobs:
       - name: CDK Deploy Prod
         run: |
           echo "Running CDK Deploy for Prod stacks"
-          cdk deploy *-prod
+          cdk deploy *-Prod
       - name: Upload CDK synth output (prod)
         uses: actions/upload-artifact@v4
         with:

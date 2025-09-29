@@ -1,17 +1,18 @@
-import { Duration, Stack, StackProps } from 'aws-cdk-lib';
+import { Duration, Stack } from 'aws-cdk-lib';
 import * as path from 'path';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 import { createS3Bucket } from '../utils/createAsset';
 import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
+import { OwlWatchStackProps } from '../utils/types';
 
 export class DataStack extends Stack {
   public readonly dataBucket: Bucket;
 
-  constructor(scope: Construct, id: string, props?: StackProps) {
+  constructor(scope: Construct, id: string, props: OwlWatchStackProps) {
     super(scope, id, props);
 
-    this.dataBucket = createS3Bucket(this, 'owl-watch-bucket', [
+    this.dataBucket = createS3Bucket(this, props.stageName, 'owl-watch-bucket', [
       {
         id: 'RawDataLifecycleRule',
         enabled: true,

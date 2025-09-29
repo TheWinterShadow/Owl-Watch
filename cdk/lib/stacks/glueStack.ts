@@ -1,12 +1,12 @@
-import { Stack, StackProps } from 'aws-cdk-lib';
+import { Stack } from 'aws-cdk-lib';
 import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 import { createGlueCrawler, createGlueJob } from '../utils/createAsset';
-import { GlueCrawlerConfig, GlueJobConfig } from '../utils/types';
+import { GlueCrawlerConfig, GlueJobConfig, OwlWatchStackProps } from '../utils/types';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { CfnCrawler, CfnJob } from 'aws-cdk-lib/aws-glue';
 
-interface GlueStackProps extends StackProps {
+interface GlueStackProps extends OwlWatchStackProps {
   assetBucket: Bucket;
 }
 
@@ -18,7 +18,7 @@ export class GlueStack extends Stack {
     super(scope, id, props);
 
     // Example IAM role for Glue
-    const glueRole = this.createGlueRole();
+    const glueRole = this.createGlueRole(props);
 
     // Example: Deploy Glue Jobs
     const glueJobConfigs: GlueJobConfig[] = this.createGlueJobConfigs();
@@ -26,13 +26,14 @@ export class GlueStack extends Stack {
     const glueCrawlerConfigs: GlueCrawlerConfig[] = this.createGlueCrawlerConfigs();
 
     glueJobConfigs.forEach((jobConfig) => {
-      const glueJob = createGlueJob(this, props, jobConfig, glueRole);
+      const glueJob = createGlueJob(this, props.stageName, jobConfig, glueRole);
       this.glueJobs.push(glueJob);
     });
 
     glueCrawlerConfigs.forEach((crawlerConfig) => {
       const glueCrawler = createGlueCrawler(
         this,
+        props.stageName,
         crawlerConfig.name + 'Crawler',
         glueRole,
         '',
@@ -51,8 +52,8 @@ export class GlueStack extends Stack {
     return [];
   }
 
-  private createGlueRole(): Role {
-    return new Role(this, 'GlueJobRole', {
+  private createGlueRole(props: GlueStackProps): Role {
+    return new Role(this, `GlueRole-${props.stageName}`, {
       assumedBy: new ServicePrincipal('glue.amazonaws.com'),
       managedPolicies: [ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSGlueServiceRole')],
     });

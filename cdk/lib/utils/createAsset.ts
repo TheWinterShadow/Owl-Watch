@@ -7,9 +7,14 @@ import { Construct } from 'constructs';
 import { GlueJobConfig } from './types';
 import { Topic } from 'aws-cdk-lib/aws-sns';
 
-export function createS3Bucket(scope: Construct, bucketName: string, lifecycleRules: LifecycleRule[] = []): Bucket {
-  return new Bucket(scope, bucketName, {
-    bucketName: `${bucketName}`.toLowerCase(),
+export function createS3Bucket(
+  scope: Construct,
+  stageName: string,
+  bucketName: string,
+  lifecycleRules: LifecycleRule[] = [],
+): Bucket {
+  return new Bucket(scope, `${bucketName}-${stageName}`, {
+    bucketName: `${bucketName}-${stageName}`.toLowerCase(),
     blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
     versioned: true,
     encryption: BucketEncryption.S3_MANAGED,
@@ -19,31 +24,32 @@ export function createS3Bucket(scope: Construct, bucketName: string, lifecycleRu
   });
 }
 
-export function createGlueDatabase(scope: Construct, database_name: string, props: StackProps) {
-  return new CfnDatabase(scope, database_name, {
+export function createGlueDatabase(scope: Construct, stageName: string, database_name: string, props: StackProps) {
+  return new CfnDatabase(scope, `${database_name}-${stageName}`, {
     catalogId: props.env?.account || '',
     databaseInput: {
-      name: database_name,
+      name: `${database_name}_${stageName}`.toLowerCase(),
       description: 'Database for Owl Watch crawler data',
     },
-    databaseName: database_name,
+    databaseName: `${database_name}_${stageName}`.toLowerCase(),
   });
 }
 
 export function createGlueTable(
   scope: Construct,
+  stageName: string,
   data_base: string,
   table_name: string,
   s3_location: string,
   table_columns: CfnTable.ColumnProperty[],
   props: StackProps,
 ) {
-  return new CfnTable(scope, table_name, {
-    databaseName: data_base,
+  return new CfnTable(scope, `${table_name}-${stageName}`, {
+    databaseName: `${data_base}_${stageName}`.toLowerCase(),
     catalogId: props.env?.account || '',
     tableInput: {
-      name: table_name,
-      description: `Table for schema type ${table_name} data`,
+      name: `${table_name}_${stageName}`.toLowerCase(),
+      description: `Table for schema type ${table_name}_${stageName} data`,
       tableType: 'EXTERNAL_TABLE',
       parameters: {
         classification: 'parquet',
@@ -76,17 +82,18 @@ export function createGlueTable(
 
 export function createGlueCrawler(
   scope: Construct,
+  stageName: string,
   crawlerName: string,
   crawlerRole: Role,
   databaseName: string,
   schedule: CfnCrawler.ScheduleProperty,
   targetConfig: CfnCrawler.TargetsProperty,
 ): CfnCrawler {
-  return new CfnCrawler(scope, crawlerName, {
+  return new CfnCrawler(scope, `${crawlerName}-${stageName}`, {
     role: crawlerRole.roleArn,
     targets: targetConfig,
-    databaseName: databaseName,
-    name: crawlerName,
+    databaseName: `${databaseName}_${stageName}`.toLowerCase(),
+    name: `${crawlerName}-${stageName}`.toUpperCase(),
     schemaChangePolicy: {
       updateBehavior: 'LOG',
       deleteBehavior: 'LOG',
@@ -114,7 +121,7 @@ export function createGlueCrawler(
  */
 export function createLambdaFunction(
   scope: Construct,
-  stage: string,
+  stageName: string,
   lambdaName: string,
   filePath: string,
   handlerPath: string,
@@ -123,8 +130,8 @@ export function createLambdaFunction(
   runTime: Runtime,
   environmentVariables: { [key: string]: string },
 ): LFunction {
-  return new LFunction(scope, lambdaName, {
-    functionName: lambdaName,
+  return new LFunction(scope, `${lambdaName}-${stageName}`, {
+    functionName: `${lambdaName}-${stageName}`.toLowerCase(),
     description: `Timestamp: ${new Date().toISOString()}`,
     code: Code.fromAsset(filePath),
     applicationLogLevelV2: ApplicationLogLevel.DEBUG,
@@ -137,9 +144,9 @@ export function createLambdaFunction(
   });
 }
 
-export function createGlueJob(scope: Construct, props: StackProps, config: GlueJobConfig, role: Role): CfnJob {
-  return new CfnJob(scope, config.name, {
-    name: config.name,
+export function createGlueJob(scope: Construct, stageName: string, config: GlueJobConfig, role: Role): CfnJob {
+  return new CfnJob(scope, `${config.name}-${stageName}`, {
+    name: `${config.name}-${stageName}`,
     role: role.roleArn,
     command: {
       name: 'glueetl',
@@ -152,6 +159,7 @@ export function createGlueJob(scope: Construct, props: StackProps, config: GlueJ
     workerType: config.workerType || 'G.1X',
     numberOfWorkers: config.numberOfWorkers || 2,
     defaultArguments: {
+      '--STAGE_NAME': stageName,
       '--enable-metrics': '',
       '--enable-continuous-cloudwatch-log': 'true',
       '--job-language': 'python',
@@ -182,9 +190,9 @@ export function createGlueJob(scope: Construct, props: StackProps, config: GlueJ
   });
 }
 
-export function createSnsTopic(scope: Construct, topicName: string): Topic {
-  return new Topic(scope, topicName, {
-    displayName: topicName,
-    topicName: topicName,
+export function createSnsTopic(scope: Construct, stageName: string, topicName: string): Topic {
+  return new Topic(scope, `${topicName}-${stageName}`, {
+    displayName: `Owl Watch ${topicName} Topic`,
+    topicName: `${topicName}-${stageName}`,
   });
 }

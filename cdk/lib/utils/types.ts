@@ -1,5 +1,18 @@
+import { StackProps } from 'aws-cdk-lib';
 import { CfnCrawler } from 'aws-cdk-lib/aws-glue';
 import { Role } from 'aws-cdk-lib/aws-iam';
+
+export interface StageConfig {
+  name: string;
+  accountId: string;
+  region: string;
+}
+
+export interface OwlWatchStackProps extends StackProps {
+  stageName: string;
+  accountId: string;
+  region: string;
+}
 
 export interface GlueJobConfig {
   name: string;

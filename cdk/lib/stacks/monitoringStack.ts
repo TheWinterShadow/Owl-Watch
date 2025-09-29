@@ -1,11 +1,12 @@
-import { Stack, StackProps } from 'aws-cdk-lib';
+import { Stack } from 'aws-cdk-lib';
 import { CfnCrawler, CfnJob } from 'aws-cdk-lib/aws-glue';
 import { Function as LFunction } from 'aws-cdk-lib/aws-lambda';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 import { MonitoringFacade } from 'cdk-monitoring-constructs';
+import { OwlWatchStackProps } from '../utils/types';
 
-interface MonitoringStackProps extends StackProps {
+interface MonitoringStackProps extends OwlWatchStackProps {
   s3Buckets: Bucket[];
   lambdaFunctions: LFunction[];
   glueJobs: CfnJob[];
@@ -17,7 +18,7 @@ export class MonitoringStack extends Stack {
     super(scope, id, props);
 
     // Monitoring Dashboard
-    const dashboard = new MonitoringFacade(this, 'MonitoringDashboard');
+    const dashboard = new MonitoringFacade(this, `MonitoringDashboard-${props.stageName}`);
 
     // S3 Bucket Monitoring
     for (const bucket of props.s3Buckets) {
