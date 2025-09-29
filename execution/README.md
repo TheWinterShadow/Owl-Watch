@@ -29,5 +29,5 @@ Glue jobs in `etl/` are triggered by pipeline events or can be run manually in A
 
 ### Run Unit Tests
 ```bash
-hatch test
+hatch test 
 ```
