@@ -1,13 +1,16 @@
 name: Full Build
 
 on:
-    push:
-        branches: ["*"]
-        paths:
-            - "cdk/**"
-            - "execution/**"
-            - "integration_tests/**"
-            - ".github/workflows/full-build.yml"
+
+  push:
+    branches: ["*"]
+    paths:
+      - "cdk/**"
+      - "execution/**"
+      - "integration_tests/**"
+      - ".github/workflows/full-build.yml"
+
+  workflow_dispatch:
 
 jobs:
     # CDK jobs

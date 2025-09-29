@@ -1,12 +1,15 @@
 name: Security Scanning
 
 on:
+
   workflow_run:
     workflows: ["Full Build"]
     types:
       - completed
     branches:
       - master
+
+  workflow_dispatch:
 
 jobs:
   executionSecurityScan:
