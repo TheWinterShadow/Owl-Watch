@@ -30,7 +30,7 @@ dependencies = [
     "pyspark",
     "pandas",
     "numpy",
-    "awsglue-dev",
+    "aws-glue-libs @ git+https://github.com/awslabs/aws-glue-libs.git",
 ]
 
 [tool.hatch.envs.dev]
@@ -40,7 +40,8 @@ dependencies = [
     "pyspark",
     "pandas",
     "numpy",
-    "awsglue-dev",
+    "awsglue-stubs",
+    "aws-glue-libs",
     "boto3-stubs",
     "isort",
     "black",
@@ -91,8 +92,11 @@ classifiers = [
 requires-python = ">=3.9"
 dependencies = [
     "boto3",
-    "moto[glue]==4.1.14"
+    "moto[glue]==4.1.14",
+    "aws-glue-libs @ git+https://github.com/awslabs/aws-glue-libs.git"
 ]
+[tool.hatch.metadata]
+allow-direct-references = true
 
 [tool.setuptools.packages.find]
 where = ["execution"]
@@ -119,6 +123,7 @@ warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
 exclude = "execution/docs/.*|docs/.*"
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests/execution"]
