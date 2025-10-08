@@ -19,7 +19,6 @@ class BaseGlueETLJob(ABC):
         self.args = self._get_args()
         self._initialize_glue_context()
         self.job = Job(self.glue_context)
-        self.job.init(self.args['JOB_NAME'], self.args)
 
     def _get_args(self) -> Dict[str, Any]:
         """

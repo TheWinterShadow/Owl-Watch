@@ -4,11 +4,10 @@ import sys
 
 from awsglue.context import GlueContext
 from awsglue.job import Job
-from pyspark import SparkContext
 from awsglue.utils import getResolvedOptions
+from pyspark import SparkContext
 
-args = getResolvedOptions(
-    sys.argv, ["JOB_NAME", "raw-bucket", "cleaned-bucket"])
+args = getResolvedOptions(sys.argv, ["JOB_NAME", "raw-bucket", "cleaned-bucket"])
 
 sc = SparkContext()
 glueContext = GlueContext(sc)

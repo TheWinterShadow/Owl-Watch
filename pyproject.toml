@@ -13,12 +13,17 @@ directory = "execution/dist"
 
 [tool.hatch.envs.default.scripts]
 pre-build = [
-    "isort execution/etl execution/ml tests/execution integration_tests tests/integration_tests",
+    "isort execution/etl execution/ml tests/execution integration_tests tests/integration_tests --check --diff",
     "black --check execution/etl execution/ml tests/execution integration_tests tests/integration_tests",
     "mypy execution/etl execution/ml tests/execution integration_tests tests/integration_tests",
     "flake8 execution/etl execution/ml tests/execution integration_tests tests/integration_tests",
     "bandit -r execution/",
     "bandit -r integration_tests/",
+]
+
+format = [
+    "isort execution/etl execution/ml tests/execution integration_tests tests/integration_tests",
+    "black execution/etl execution/ml tests/execution integration_tests tests/integration_tests"
 ]
 
 # Sphinx documentation build script
@@ -30,7 +35,6 @@ dependencies = [
     "pyspark",
     "pandas",
     "numpy",
-    "aws-glue-libs @ git+https://github.com/awslabs/aws-glue-libs.git",
 ]
 
 [tool.hatch.envs.dev]
@@ -40,8 +44,6 @@ dependencies = [
     "pyspark",
     "pandas",
     "numpy",
-    "awsglue-stubs",
-    "aws-glue-libs",
     "boto3-stubs",
     "isort",
     "black",
@@ -56,17 +58,12 @@ dependencies = [
     "pytest-mock>=3.10.0",
     "pytest-cov",
     "bandit",
-]
-
-[tool.hatch.envs.test]
-dependencies = [
+    "aws-glue-libs @ git+https://github.com/awslabs/aws-glue-libs.git",
     "pytest",
     "pytest-cov",
     "moto[glue]==4.1.14",
     "pytest-asyncio>=0.21.0",
     "pytest-mock>=3.10.0",
-    "openapi-spec-validator",
-    "docker",
     "boto3",
 ]
 
@@ -90,11 +87,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
 ]
 requires-python = ">=3.9"
-dependencies = [
-    "boto3",
-    "moto[glue]==4.1.14",
-    "aws-glue-libs @ git+https://github.com/awslabs/aws-glue-libs.git"
-]
+
 [tool.hatch.metadata]
 allow-direct-references = true
 
