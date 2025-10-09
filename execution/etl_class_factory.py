@@ -5,8 +5,8 @@ ETL class factory for selecting and returning the appropriate ETL class object f
 
 from typing import Type
 from utils.base_glue_job import BaseGlueETLJob
-from execution.etl.data_cleaning import DataCleaningETL
-from execution.etl.sentiment_analysis import SentimentAnalysisETL
+from etl.jobs.email_communication import EmailCommunicationETL
+from etl.jobs.slack_communication import SlackCommunicationETL
 
 
 class ETLClassFactory:
@@ -14,8 +14,8 @@ class ETLClassFactory:
     def __init__(self):
         # Map job_type to ETL class
         self.etl_class_map = {
-            'data_cleaning': DataCleaningETL,
-            'sentiment_analysis': SentimentAnalysisETL,
+            'email_communication': EmailCommunicationETL,
+            'slack_communication': SlackCommunicationETL,
             # Add more job types and their classes here
         }
 

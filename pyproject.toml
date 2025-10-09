@@ -4,6 +4,11 @@ black = "python -m black {args}"
 flake8 = "python -m flake8 {args}"
 mypy = "python -m mypy --exclude 'execution/docs' {args}"
 
+# ETL job runners for development
+run-etl = "python execution/local_etl_runner.py {args}"
+run-email-etl = "python execution/local_etl_runner.py --job-type email_communication {args}"
+run-slack-etl = "python execution/local_etl_runner.py --job-type slack_communication {args}"
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
@@ -28,6 +33,7 @@ format = [
 
 # Sphinx documentation build script
 docs = "sphinx-build -b html execution/docs/source execution/docs/build"
+
 
 [tool.hatch.envs.default]
 dependencies = [

@@ -50,6 +50,35 @@ Owl-Watch is a data engineering pipeline for ingesting, processing, and curating
 3. **Cleaned data** stored in S3 Cleaned Bucket
 4. **ML Processing** (Bedrock, Sentiment Analysis) produces curated data in S3 Curated Bucket
 
+## Development
+
+### Running ETL Jobs Locally
+
+You can run ETL jobs locally for development and testing using the built-in hatch scripts:
+
+```bash
+# Run any ETL job with custom arguments
+hatch run run-etl --job-type email_communication --output-path ./my-output
+
+# Run specific ETL jobs with defaults
+hatch run run-email-etl
+hatch run run-slack-etl
+
+# Run with custom output path
+hatch run run-email-etl --output-path ./email-results
+```
+
+The local ETL runner:
+- Uses local Spark instead of AWS Glue
+- Creates sample data for testing
+- Outputs results to local filesystem
+- Shows transformed data preview
+
+### Available ETL Job Types
+
+- `email_communication` - Transforms email data to standardized communication schema
+- `slack_communication` - Transforms Slack data to standardized communication schema
+
 ## Testing
 
 Integration tests use `pytest` and `moto` to mock AWS services. Test scenarios include:
@@ -59,6 +88,14 @@ Integration tests use `pytest` and `moto` to mock AWS services. Test scenarios i
 - End-to-end pipeline flow
 - ML processing with Lambda and Bedrock
 
+```bash
+# Run all tests
+hatch run pytest
+
+# Run specific test suite
+hatch run pytest tests/execution/
+hatch run pytest integration_tests/
+```
 
 ## License
 

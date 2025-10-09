@@ -4,6 +4,7 @@ Main runner for Glue ETL jobs. Intakes parameters, selects ETL class, runs job, 
 
 import sys
 
+from etl_class_factory import ETLClassFactory
 from utils.base_glue_job import BaseGlueETLJob
 
 
@@ -18,7 +19,8 @@ def main():
         raise ValueError("Missing required parameter: --JOB_TYPE")
 
     # Get the ETL class from the factory
-    etl_class = BaseGlueETLJob(["job_type"])
+    factory = ETLClassFactory()
+    etl_class = factory.get_etl_class(job_type)
 
     # Define required args for each job type
     job_args_map = {
