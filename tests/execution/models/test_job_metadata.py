@@ -421,7 +421,7 @@ class TestEnums(unittest.TestCase):
         self.assertEqual(JobType.CLEANING.value, "cleaned")
         self.assertEqual(JobType.SENTIMENT.value, "sentiment")
         self.assertEqual(JobType.NLP.value, "nlp")
-        self.assertEqual(JobType.ANALYSTICS.value, "analytics")
+        self.assertEqual(JobType.ANALYTICS.value, "analytics")
         self.assertEqual(JobType.COMMUNICATION_ETL.value, "communication_etl")
 
     def test_data_source_values(self):
