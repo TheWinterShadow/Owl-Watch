@@ -37,13 +37,9 @@ class SecureLogger(PowertoolsLogger):
     """
 
     def __init__(self):
-        try:
-            account_id = get_account_id()
-        except Exception:
-            account_id = ""
         super().__init__(
             service="data_sentinel",
-            level=("INFO" if account_id == "774787676070" else "DEBUG"),
+            level="DEBUG",
             disable_log_level_warning=True,
             location="[%(filename)s:%(lineno)s][%(funcName)s]",
         )

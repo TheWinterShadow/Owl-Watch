@@ -21,6 +21,7 @@ from pyspark.sql.functions import (
 from pyspark.sql.types import DoubleType, IntegerType
 
 from execution.models.base_job import BaseGlueETLJob
+from execution.utils.logger import logger
 
 
 class DataCleaningETL(BaseGlueETLJob):
@@ -63,7 +64,7 @@ class DataCleaningETL(BaseGlueETLJob):
         if not raw_bucket or not cleaned_bucket:
             raise ValueError("Both raw_data and cleaned_data must be specified")
 
-        print(f"Processing raw data from s3://{raw_bucket}/raw/")
+        logger.secure_info(f"Processing raw data from s3://{raw_bucket}/raw/")
 
         try:
             df = self.spark.read.json(f"s3://{raw_bucket}/raw/")
@@ -75,18 +76,18 @@ class DataCleaningETL(BaseGlueETLJob):
                     f"s3://{raw_bucket}/raw/"
                 )
 
-        print(f"Read {df.count()} raw records")
+        logger.secure_info(f"Read {df.count()} raw records")
 
         cleaned_df = self._clean_data(df)
 
         validated_df = self._validate_data_quality(cleaned_df)
 
         output_path = f"s3://{cleaned_bucket}/cleaned/"
-        print(f"Writing cleaned data to {output_path}")
+        logger.secure_info(f"Writing cleaned data to {output_path}")
 
         validated_df.write.mode("overwrite").parquet(output_path)
 
-        print(f"Successfully cleaned {validated_df.count()} records")
+        logger.secure_info(f"Successfully cleaned {validated_df.count()} records")
         return validated_df
 
     def _clean_data(self, df: DataFrame) -> DataFrame:
