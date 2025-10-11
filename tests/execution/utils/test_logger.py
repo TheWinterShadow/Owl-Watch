@@ -32,13 +32,13 @@ class TestSecureLogger(unittest.TestCase):
 
     def setUp(self):
         with patch(
-            "execution.utils.logger.get_account_id", return_value="774787676070"
+            "execution.utils.logger.get_account_id", return_value="123456789012"
         ):
             self.logger = SecureLogger()
 
     def test_init_production_account(self):
         with patch(
-            "execution.utils.logger.get_account_id", return_value="774787676070"
+            "execution.utils.logger.get_account_id", return_value="123456789012"
         ):
             secure_logger = SecureLogger()
 

@@ -6,7 +6,7 @@ validation rules, quality dimensions, metrics tracking, and reporting functional
 """
 
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import UTC, datetime
 from enum import Enum
 from typing import Any, Callable, Dict, List, Optional
 
@@ -115,7 +115,7 @@ class ValidationResult:
     message: str
     severity: ValidationSeverity = ValidationSeverity.INFO
     dimension: QualityDimension = QualityDimension.VALIDITY
-    timestamp: datetime = field(default_factory=datetime.utcnow)
+    timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
     record_id: Optional[str] = None
     field_name: Optional[str] = None
 
@@ -190,6 +190,7 @@ class DataQualityMetrics(BaseRecord):
     errors: List[ErrorInfo] = field(default_factory=list)
 
     def __post_init__(self):
+        super().__post_init__()
         self.record_type = RecordType.DATA_QUALITY
         self.calculate_overall_score()
 

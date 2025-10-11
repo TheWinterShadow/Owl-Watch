@@ -29,10 +29,10 @@ pre-build = [
 docs = "sphinx-build -b html execution/docs/source execution/docs/build"
 
 release = [
-    "hatch run pre-build",
+    "hatch run dev:pre-build",
     "hatch build",
     "hatch test",
-    "hatch run docs"
+    "hatch run dev:docs"
 ]
 
 

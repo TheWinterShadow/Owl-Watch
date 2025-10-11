@@ -6,7 +6,7 @@ configuration, status tracking, and resource monitoring throughout the ETL pipel
 """
 
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
@@ -103,7 +103,7 @@ class ProcessingContext:
     parallelism_level: Optional[int] = None
     memory_allocation: Optional[str] = None
 
-    created_at: datetime = field(default_factory=datetime.utcnow)
+    created_at: datetime = field(default_factory=lambda: datetime.now(UTC))
     started_at: Optional[datetime] = None
     completed_at: Optional[datetime] = None
 
@@ -111,10 +111,10 @@ class ProcessingContext:
     trigger_type: str = "manual"
 
     def start_processing(self):
-        self.started_at = datetime.utcnow()
+        self.started_at = datetime.now(UTC)
 
     def complete_processing(self):
-        self.completed_at = datetime.utcnow()
+        self.completed_at = datetime.now(UTC)
 
     @property
     def processing_duration(self) -> Optional[timedelta]:
@@ -154,6 +154,7 @@ class JobMetadata(BaseRecord):
     last_error: Optional[str] = None
 
     def __post_init__(self):
+        super().__post_init__()
         self.record_type = RecordType.METADATA
 
     def validate(self) -> List[str]:
@@ -179,7 +180,7 @@ class JobMetadata(BaseRecord):
     def start_job(self, execution_id: str):
         self.status = JobStatus.RUNNING
         self.execution_id = execution_id
-        self.started_at = datetime.utcnow()
+        self.started_at = datetime.now(UTC)
 
         if self.processing_context:
             self.processing_context.start_processing()
@@ -188,7 +189,7 @@ class JobMetadata(BaseRecord):
         self, stats: ProcessingStats, output_locations: Optional[List[str]] = None
     ):
         self.status = JobStatus.COMPLETED
-        self.completed_at = datetime.utcnow()
+        self.completed_at = datetime.now(UTC)
         self.processing_stats = stats
 
         if output_locations:
@@ -199,7 +200,7 @@ class JobMetadata(BaseRecord):
 
     def fail_job(self, error: ErrorInfo):
         self.status = JobStatus.FAILED
-        self.completed_at = datetime.utcnow()
+        self.completed_at = datetime.now(UTC)
         self.errors.append(error)
         self.last_error = error.error_message
 

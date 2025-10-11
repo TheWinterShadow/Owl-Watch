@@ -1,5 +1,5 @@
 import unittest
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from unittest.mock import Mock
 
 from execution.models.job_metadata import (
@@ -102,7 +102,7 @@ class TestProcessingContext(unittest.TestCase):
         context = ProcessingContext(
             execution_id="test-exec-123", job_type=JobType.SENTIMENT
         )
-        start_time = datetime.utcnow()
+        start_time = datetime.now(UTC)
         end_time = start_time + timedelta(minutes=5)
 
         context.started_at = start_time
@@ -263,7 +263,7 @@ class TestJobMetadata(unittest.TestCase):
 
     def test_execution_duration(self):
         metadata = self._create_metadata()
-        start_time = datetime.utcnow()
+        start_time = datetime.now(UTC)
         end_time = start_time + timedelta(minutes=10)
 
         metadata.started_at = start_time
@@ -350,7 +350,7 @@ class TestJobResult(unittest.TestCase):
 
     def test_execution_duration(self):
         result = JobResult(job_type=JobType.ETL)
-        start_time = datetime.utcnow()
+        start_time = datetime.now(UTC)
         end_time = start_time + timedelta(hours=2)
 
         result.started_at = start_time

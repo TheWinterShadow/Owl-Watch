@@ -23,6 +23,7 @@ from pyspark.sql.functions import (
 )
 
 from execution.models.base_job import BaseGlueETLJob
+from execution.utils.logger import logger
 
 
 class DataTransformationETL(BaseGlueETLJob):
@@ -62,11 +63,10 @@ class DataTransformationETL(BaseGlueETLJob):
         if not input_bucket or not output_bucket:
             raise ValueError("Both input-bucket and output-bucket must be specified")
 
-        print(f"Processing data from s3://{input_bucket}/")
-        self.logger.secure_info(
+        logger.secure_info(
             "Processing data",
             bucket=input_bucket,
-            transformation_type=transformation_type
+            transformation_type=transformation_type,
         )
 
         df = self._read_input_data(input_bucket)

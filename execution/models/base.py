@@ -57,6 +57,10 @@ class BaseRecord:
     processing_stats: Optional[ProcessingStats] = None
     errors: List[ErrorInfo] = field(default_factory=list)
 
+    def __post_init__(self):
+        if isinstance(self.record_type, str):
+            self.record_type = RecordType(self.record_type)
+
     def add_error(
         self,
         error_type: str,

@@ -8,6 +8,7 @@ from pyspark.sql.types import StringType, StructField, StructType, TimestampType
 
 from execution.models.base_job import BaseGlueETLJob
 from execution.models.job_metadata import DataSource
+from execution.utils.validation import ValidationResult
 
 
 class ConcreteGlueETLJob(BaseGlueETLJob):
@@ -244,7 +245,7 @@ class TestBaseGlueETLJob(unittest.TestCase):
         mock_df = Mock()
         expected_schema = StructType([StructField("id", StringType(), True)])
 
-        mock_validation_result = {"is_valid": True, "errors": [], "warnings": []}
+        mock_validation_result = ValidationResult(is_valid=True, errors=[], warnings=[])
         job.schema_validator.validate_schema = Mock(return_value=mock_validation_result)
 
         result = job.validate_schema(mock_df, expected_schema)

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any, Dict, List, Optional
 
 
@@ -12,7 +12,7 @@ class OwlWatchExecutionException(Exception):
         super().__init__(message)
         self.message = message
         self.context = context or {}
-        self.timestamp = timestamp or datetime.utcnow()
+        self.timestamp = timestamp or datetime.now(UTC)
 
     def to_dict(self) -> Dict[str, Any]:
         return {
