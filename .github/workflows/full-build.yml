@@ -1,5 +1,6 @@
 name: Full Build
-
+permissions:
+  contents: read
 on:
   push:
     branches: ["*"]

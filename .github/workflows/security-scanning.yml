@@ -1,5 +1,6 @@
 name: Security Scanning
-
+permissions:
+  contents: read
 on:
   workflow_run:
     workflows: ["Full Build"]

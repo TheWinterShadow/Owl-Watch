@@ -1,5 +1,6 @@
 name: CICD Pipeline
-
+permissions:
+  contents: read
 on:
   workflow_run:
     workflows: ["Security Scanning"]

@@ -25,7 +25,6 @@ for (const stage of STAGES) {
 
 function createStacksForStage(stage: StageConfig) {
   const { name, accountId, region } = stage;
-  console.log(`Creating stacks for stage: ${name} in account: ${accountId}, region: ${region}`);
 
   // Set environment for the stacks
   const env = { account: accountId, region };
