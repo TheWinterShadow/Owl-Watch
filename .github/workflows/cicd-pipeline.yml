@@ -169,11 +169,48 @@ jobs:
             core.summary.addRaw('Check logs and uploaded artifacts for details.')
             await core.summary.write()
 
+  manualApproval:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    name: Manual Approval for Production Deployment
+    needs: runIntegTests
+    runs-on: ubuntu-latest
+    timeout-minutes: 1440  # 24 hours timeout for manual approval
+    steps:
+      - name: Manual Approval Required
+        uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: ${{ github.repository_owner }}
+          minimum-approvals: 1
+          issue-title: "🚀 Production Deployment Approval Required"
+          issue-body: |
+            **Production Deployment Approval Required**
+            
+            Please review the following before approving:
+            
+            - ✅ Beta deployment completed successfully
+            - ✅ Integration tests passed
+            - ✅ Code review completed
+            - ✅ Ready for production deployment
+            
+            **Deployment Details:**
+            - Branch: ${{ github.ref_name }}
+            - Commit: ${{ github.sha }}
+            - Triggered by: ${{ github.actor }}
+            - Workflow: ${{ github.workflow }}
+            
+            **Action Required:**
+            - Review the changes
+            - Comment "approved" or "approve" to proceed
+            - Comment "rejected" or "reject" to cancel
+          exclude-workflow-initiator-as-approver: false
+
   deployProd:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Deploy stacks to prod environment
-    needs: runIntegTests
+    needs: manualApproval
     runs-on: ubuntu-latest
+    environment: production
     env:
       AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
     timeout-minutes: 20
