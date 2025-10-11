@@ -67,6 +67,8 @@ jobs:
   cdkStackList:
     name: "List CDK Stacks"
     runs-on: ubuntu-latest
+    env:
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
     needs: cdkBuild
     steps:
       - name: Checkout repository
@@ -99,6 +101,8 @@ jobs:
   cdkDiff:
     name: "CDK Diff"
     runs-on: ubuntu-latest
+    env:
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
     needs: cdkStackList
     steps:
       - name: Checkout repository
@@ -131,6 +135,8 @@ jobs:
   cdkSynth:
     name: "CDK Synth"
     runs-on: ubuntu-latest
+    env:
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
     needs: cdkDiff
     steps:
       - name: Checkout repository

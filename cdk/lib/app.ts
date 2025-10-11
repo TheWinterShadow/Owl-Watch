@@ -6,9 +6,16 @@ import { StageConfig } from './utils/types';
 
 const app = new App();
 
+// Get AWS Account ID from environment variable (set from GitHub secrets)
+const AWS_ACCOUNT_ID = process.env.AWS_ACCOUNT_ID;
+
+if (!AWS_ACCOUNT_ID) {
+  throw new Error('AWS_ACCOUNT_ID environment variable is required. Please set it from GitHub repository secrets.');
+}
+
 const STAGES: StageConfig[] = [
-  { name: 'Beta', accountId: '759314175046', region: 'us-east-1' },
-  { name: 'Prod', accountId: '759314175046', region: 'us-east-2' },
+  { name: 'Beta', accountId: AWS_ACCOUNT_ID, region: 'us-east-1' },
+  { name: 'Prod', accountId: AWS_ACCOUNT_ID, region: 'us-east-2' },
   // Add more stages as needed
 ];
 
