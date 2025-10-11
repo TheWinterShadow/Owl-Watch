@@ -70,7 +70,6 @@ class TestDataCleaningETL(unittest.TestCase):
         job = TestableDataCleaningETL(self.args_to_extract)
         job.args = {}
 
-        print(f"DEBUG: job.args = {job.args}")
 
         with self.assertRaises(ValueError) as context:
             job.run()
