@@ -43,7 +43,7 @@ OwlWatchExecutionException (base)
 Used when required configuration parameters are missing:
 
 ```python
-from execution.schemas.exceptions import MissingConfigurationError
+from execution.models.exceptions import MissingConfigurationError
 
 # Single parameter
 raise MissingConfigurationError(parameters=["source_bucket"])
