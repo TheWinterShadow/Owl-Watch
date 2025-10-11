@@ -21,8 +21,8 @@ class TestGlueJobs:
             },
             DefaultArguments={
                 "--job-language": "python",
-                "--raw-bucket": "test-raw-bucket",
-                "--cleaned-bucket": "test-cleaned-bucket",
+                "--raw_data": "test-raw_data",
+                "--cleaned_data": "test-cleaned_data",
             },
             GlueVersion="4.0",
             MaxRetries=1,
@@ -36,7 +36,7 @@ class TestGlueJobs:
         assert job["Name"] == job_name  # nosec
         assert job["Command"]["Name"] == "glueetl"  # nosec
         assert job["GlueVersion"] == "4.0"  # nosec
-        assert job["DefaultArguments"]["--raw-bucket"] == "test-raw-bucket"  # nosec
+        assert job["DefaultArguments"]["--raw_data"] == "test-raw_data"  # nosec
 
     def test_glue_job_run_simulation(self, glue_client, s3_client, test_buckets):
         """Test simulating a Glue job run."""
@@ -52,8 +52,8 @@ class TestGlueJobs:
                 "ScriptLocation": f's3://{test_buckets["raw"]}/scripts/sentiment_analysis.py',
             },
             DefaultArguments={
-                "--cleaned-bucket": test_buckets["cleaned"],
-                "--curated-bucket": test_buckets["curated"],
+                "--cleaned_data": test_buckets["cleaned"],
+                "--curated_data": test_buckets["curated"],
             },
         )
 
