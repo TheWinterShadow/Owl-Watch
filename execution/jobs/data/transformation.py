@@ -60,7 +60,8 @@ class DataTransformationETL(BaseGlueETLJob):
         transformation_type = self.args.get("transformation-type", "standard")
 
         if not input_bucket or not output_bucket:
-            raise ValueError("Both input-bucket and output-bucket must be specified")
+            raise ValueError(
+                "Both input-bucket and output-bucket must be specified")
 
         print(f"Processing data from s3://{input_bucket}/")
         print(f"Transformation type: {transformation_type}")
@@ -100,10 +101,12 @@ class DataTransformationETL(BaseGlueETLJob):
     def _transform_communication_data(self, df: DataFrame) -> DataFrame:
         transformed_df = df.select(
             coalesce(col("sender"), col("from"), col("user")).alias("sender"),
-            coalesce(col("recipient"), col("to"), col("channel")).alias("recipient"),
+            coalesce(col("recipient"), col("to"),
+                     col("channel")).alias("recipient"),
             coalesce(col("subject"), lit("No Subject")).alias("subject"),
             coalesce(col("body"), col("message"), col("text")).alias("body"),
-            coalesce(col("timestamp"), col("date"), col("sent_at")).alias("timestamp"),
+            coalesce(col("timestamp"), col("date"),
+                     col("sent_at")).alias("timestamp"),
             coalesce(col("communication_type"), lit("unknown")).alias("type"),
         )
 
@@ -120,11 +123,13 @@ class DataTransformationETL(BaseGlueETLJob):
             )
             .withColumn(
                 "has_attachments",
-                when(col("body").rlike(r".*\[attachment\].*"), True).otherwise(False),
+                when(col("body").rlike(
+                    r".*\[attachment\].*"), True).otherwise(False),
             )
             .withColumn(
                 "is_reply",
-                when(col("subject").rlike(r"^(Re:|RE:).*"), True).otherwise(False),
+                when(col("subject").rlike(r"^(Re:|RE:).*"),
+                     True).otherwise(False),
             )
         )
 
@@ -136,7 +141,8 @@ class DataTransformationETL(BaseGlueETLJob):
             coalesce(col("username"), col("handle")).alias("username"),
             coalesce(col("email"), col("email_address")).alias("email"),
             coalesce(
-                col("full_name"), concat_ws(" ", col("first_name"), col("last_name"))
+                col("full_name"), concat_ws(
+                    " ", col("first_name"), col("last_name"))
             ).alias("full_name"),
             coalesce(col("department"), col("team")).alias("department"),
             coalesce(col("role"), col("position"), col("title")).alias("role"),
@@ -145,14 +151,16 @@ class DataTransformationETL(BaseGlueETLJob):
         transformed_df = transformed_df.withColumn(
             "email_domain",
             when(
-                col("email").isNotNull(), regexp_extract(col("email"), r"@(.+)", 1)
+                col("email").isNotNull(), regexp_extract(
+                    col("email"), r"@(.+)", 1)
             ).otherwise(None),
         )
 
         transformed_df = transformed_df.withColumn(
             "user_category",
             when(
-                col("email_domain").rlike(r".*(gmail|yahoo|hotmail|outlook).*"),
+                col("email_domain").rlike(
+                    r".*(gmail|yahoo|hotmail|outlook).*"),
                 "external",
             ).otherwise("internal"),
         )
@@ -170,9 +178,11 @@ class DataTransformationETL(BaseGlueETLJob):
         )
 
         if "timestamp" not in df.columns:
-            raise ValueError("Temporal transformation requires 'timestamp' column")
+            raise ValueError(
+                "Temporal transformation requires 'timestamp' column")
 
-        transformed_df = df.withColumn("timestamp", to_timestamp(col("timestamp")))
+        transformed_df = df.withColumn(
+            "timestamp", to_timestamp(col("timestamp")))
 
         transformed_df = (
             transformed_df.withColumn("year", year(col("timestamp")))

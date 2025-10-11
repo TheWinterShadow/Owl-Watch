@@ -38,7 +38,8 @@ class WhatsAppCommunicationETL(BaseGlueETLJob):
         output_bucket = self.args.get("output-bucket")
 
         if not input_bucket or not output_bucket:
-            raise ValueError("Both input-bucket and output-bucket must be specified")
+            raise ValueError(
+                "Both input-bucket and output-bucket must be specified")
 
         print(f"Processing WhatsApp data from s3://{input_bucket}/whatsapp/")
 
@@ -62,13 +63,15 @@ class WhatsAppCommunicationETL(BaseGlueETLJob):
 
         standardized_df.write.mode("overwrite").parquet(output_path)
 
-        print(f"Successfully processed {standardized_df.count()} WhatsApp records")
+        print(
+            f"Successfully processed {standardized_df.count()} WhatsApp records")
         return standardized_df
 
     def _parse_whatsapp_text(self, df: DataFrame) -> DataFrame:
         parsed_df = df.select(
             regexp_extract(
-                col("value"), r"(\d{1,2}/\d{1,2}/\d{2,4}, \d{1,2}:\d{2} [AP]M)", 1
+                col(
+                    "value"), r"(\d{1,2}/\d{1,2}/\d{2,4}, \d{1,2}:\d{2} [AP]M)", 1
             ).alias("timestamp"),
             regexp_extract(
                 col("value"),
@@ -81,7 +84,8 @@ class WhatsAppCommunicationETL(BaseGlueETLJob):
                 1,
             ).alias("message"),
         ).filter(
-            (col("timestamp") != "") & (col("sender") != "") & (col("message") != "")
+            (col("timestamp") != "") & (
+                col("sender") != "") & (col("message") != "")
         )
 
         return parsed_df
@@ -91,12 +95,14 @@ class WhatsAppCommunicationETL(BaseGlueETLJob):
             coalesce(col("sender"), col("from"), col("username"), col("contact")).alias(
                 "sender"
             ),
-            coalesce(col("recipient"), col("to"), col("chat_name")).alias("recipient"),
+            coalesce(col("recipient"), col("to"), col(
+                "chat_name")).alias("recipient"),
             lit("WhatsApp Message").alias("subject"),
             coalesce(col("message"), col("text"), col("content"), col("body")).alias(
                 "body"
             ),
-            coalesce(col("timestamp"), col("date"), col("sent_at")).alias("timestamp"),
+            coalesce(col("timestamp"), col("date"),
+                     col("sent_at")).alias("timestamp"),
             col("message_type"),
             col("media_type"),
         )

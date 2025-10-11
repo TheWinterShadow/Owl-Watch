@@ -50,7 +50,8 @@ class SlackCommunicationETL(BaseGlueETLJob):
         output_bucket = self.args.get("output-bucket")
 
         if not input_bucket or not output_bucket:
-            raise ValueError("Both input-bucket and output-bucket must be specified")
+            raise ValueError(
+                "Both input-bucket and output-bucket must be specified")
 
         print(f"Processing Slack data from s3://{input_bucket}/slack/")
 
@@ -73,7 +74,8 @@ class SlackCommunicationETL(BaseGlueETLJob):
 
         standardized_df.write.mode("overwrite").parquet(output_path)
 
-        print(f"Successfully processed {standardized_df.count()} Slack records")
+        print(
+            f"Successfully processed {standardized_df.count()} Slack records")
         return standardized_df
 
     def _standardize_slack_data(self, df: DataFrame) -> DataFrame:
@@ -101,7 +103,8 @@ class SlackCommunicationETL(BaseGlueETLJob):
 
         standardized_df = self._clean_slack_data(standardized_df)
 
-        standardized_df = standardized_df.withColumn("communication_type", lit("slack"))
+        standardized_df = standardized_df.withColumn(
+            "communication_type", lit("slack"))
 
         return standardized_df
 
@@ -117,7 +120,8 @@ class SlackCommunicationETL(BaseGlueETLJob):
             )
             .withColumn(
                 "body",
-                regexp_replace(col("body"), r"<(https?://[^|>]+)\|([^>]+)>", "$2 ($1)"),
+                regexp_replace(
+                    col("body"), r"<(https?://[^|>]+)\|([^>]+)>", "$2 ($1)"),
             )
             .withColumn(
                 "body",

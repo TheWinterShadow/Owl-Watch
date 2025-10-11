@@ -61,7 +61,8 @@ class DataCleaningETL(BaseGlueETLJob):
         cleaned_bucket = self.args.get("cleaned_data")
 
         if not raw_bucket or not cleaned_bucket:
-            raise ValueError("Both raw_data and cleaned_data must be specified")
+            raise ValueError(
+                "Both raw_data and cleaned_data must be specified")
 
         print(f"Processing raw data from s3://{raw_bucket}/raw/")
 
@@ -196,7 +197,8 @@ class DataCleaningETL(BaseGlueETLJob):
                 validated_df = validated_df.filter(not_all_null_condition)
 
         validated_df = validated_df.withColumn(
-            "data_quality_score", self._calculate_quality_score(validated_df.columns)
+            "data_quality_score", self._calculate_quality_score(
+                validated_df.columns)
         ).withColumn(
             "cleaned_at",
             lit(self.spark.sql("SELECT current_timestamp()").collect()[0][0]),
@@ -207,7 +209,8 @@ class DataCleaningETL(BaseGlueETLJob):
     def _calculate_quality_score(self, columns: List[str]):
         non_null_count = lit(0)
         total_columns = len(
-            [col for col in columns if col not in ["data_quality_score", "cleaned_at"]]
+            [col for col in columns if col not in [
+                "data_quality_score", "cleaned_at"]]
         )
 
         for col_name in columns:

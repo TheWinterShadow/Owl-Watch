@@ -85,7 +85,8 @@ class SchemaValidator:
         logger.secure_debug("Starting schema validation")
 
         actual_schema = df.schema
-        expected_fields = {field.name: field for field in expected_schema.fields}
+        expected_fields = {
+            field.name: field for field in expected_schema.fields}
         actual_fields = {field.name: field for field in actual_schema.fields}
 
         expected_field_names = set(expected_fields.keys())
@@ -118,7 +119,8 @@ class SchemaValidator:
 
         errors = []
         if missing_fields:
-            errors.append(f"Missing required fields: {', '.join(missing_fields)}")
+            errors.append(
+                f"Missing required fields: {', '.join(missing_fields)}")
         if type_mismatches:
             errors.extend(type_mismatches)
 

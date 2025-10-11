@@ -45,7 +45,8 @@ class EmailETL(BaseGlueETLJob):
         cleaned_bucket = self.args.get("cleaned_data")
 
         if not raw_bucket or not cleaned_bucket:
-            raise ValueError("Both raw_data and cleaned_data must be specified")
+            raise ValueError(
+                "Both raw_data and cleaned_data must be specified")
 
         logger.secure_info(
             f"Processing email data from s3://{raw_bucket}/emails/",
@@ -79,13 +80,15 @@ class EmailETL(BaseGlueETLJob):
             df = self.add_quality_flags(df)
 
             logger.secure_debug("Validating output schema")
-            validation_result = self.validate_schema(df, self.get_expected_schema())
+            validation_result = self.validate_schema(
+                df, self.get_expected_schema())
             if not validation_result["is_valid"]:
                 logger.secure_error(
                     "Schema validation failed",
                     validation_result=validation_result,
                 )
-                raise ValueError(f"Schema validation failed: {validation_result}")
+                raise ValueError(
+                    f"Schema validation failed: {validation_result}")
 
             logger.secure_debug("Selecting expected fields for output")
             df = self.select_expected_fields(df)
@@ -181,7 +184,7 @@ class EmailETL(BaseGlueETLJob):
                 colon_idx = line.find(":")
                 if colon_idx > 0:
                     key = line[:colon_idx].strip()
-                    value = line[colon_idx + 1 :].strip()  # noqa: E203
+                    value = line[colon_idx + 1:].strip()  # noqa: E203
                     headers[key] = value
 
             return (

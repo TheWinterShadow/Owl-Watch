@@ -89,7 +89,8 @@ class ValidationRule:
             )
 
         try:
-            passed, message = self.rule_function(value, self.parameters, context or {})
+            passed, message = self.rule_function(
+                value, self.parameters, context or {})
             return ValidationResult(
                 rule_name=self.name,
                 passed=passed,
@@ -203,7 +204,8 @@ class DataQualityMetrics(BaseRecord):
             errors.append("total_records cannot be negative")
 
         if self.valid_records + self.invalid_records > self.total_records:
-            errors.append("valid_records + invalid_records cannot exceed total_records")
+            errors.append(
+                "valid_records + invalid_records cannot exceed total_records")
 
         score_fields = [
             "completeness_score",
@@ -237,7 +239,8 @@ class DataQualityMetrics(BaseRecord):
         non_zero_scores = [score for score in dimension_scores if score > 0]
 
         if non_zero_scores:
-            self.overall_quality_score = sum(non_zero_scores) / len(non_zero_scores)
+            self.overall_quality_score = sum(
+                non_zero_scores) / len(non_zero_scores)
         else:
             self.overall_quality_score = 0.0
 
@@ -254,7 +257,8 @@ class DataQualityMetrics(BaseRecord):
         penalty = 0 if passed else 5.0
 
         if dimension == QualityDimension.COMPLETENESS:
-            self.completeness_score = max(0.0, self.completeness_score - penalty)
+            self.completeness_score = max(
+                0.0, self.completeness_score - penalty)
         elif dimension == QualityDimension.ACCURACY:
             self.accuracy_score = max(0.0, self.accuracy_score - penalty)
         elif dimension == QualityDimension.CONSISTENCY:

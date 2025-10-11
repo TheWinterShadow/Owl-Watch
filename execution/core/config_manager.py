@@ -174,7 +174,8 @@ class JobConfigManager:
 
         # Validate S3-specific required parameters
         if not args.get("source_bucket") or not args.get("source_key"):
-            raise ValueError("S3 jobs require source-bucket and source-key parameters")
+            raise ValueError(
+                "S3 jobs require source-bucket and source-key parameters")
 
         # Extract partition information from the S3 key
         partitions = extract_partitions(args["source_key"])

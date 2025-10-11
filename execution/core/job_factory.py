@@ -59,7 +59,8 @@ class JobFactory:
         Raises:
             ValueError: If the job type is not registered
         """
-        job_class: Optional[Type[BaseGlueETLJob]] = self._job_registry.get(job_type)
+        job_class: Optional[Type[BaseGlueETLJob]
+                            ] = self._job_registry.get(job_type)
         if job_class is None:
             available_types = list(self._job_registry.keys())
             raise ValueError(
