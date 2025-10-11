@@ -141,7 +141,7 @@ class JobConfigManager:
             "etl": JobType.CLEANING,
             "cleaned": JobType.SENTIMENT,
             "sentiment": JobType.NLP,
-            "nlp": JobType.ANALYSTICS,
+            "nlp": JobType.ANALYTICS,
         }
 
         # Extract the top-level prefix from the file path

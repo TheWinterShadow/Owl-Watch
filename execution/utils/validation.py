@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
 from pyspark.sql import DataFrame
-from pyspark.sql.types import StructType
+from pyspark.sql.types import ArrayType, MapType, StructType
 
 from execution.models.exceptions import (
     MissingFieldError,
@@ -142,7 +142,6 @@ class SchemaValidator:
         )
 
     def _types_match(self, expected_type, actual_type) -> bool:
-        from pyspark.sql.types import ArrayType, MapType, StructType
 
         if type(expected_type) is not type(actual_type):
             return False
