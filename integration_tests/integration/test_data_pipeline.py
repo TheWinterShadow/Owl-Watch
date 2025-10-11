@@ -36,8 +36,8 @@ class TestDataPipeline:
                 "ScriptLocation": f's3://{test_buckets["raw"]}/scripts/data_cleaning.py',
             },
             DefaultArguments={
-                "--raw-bucket": test_buckets["raw"],
-                "--cleaned-bucket": test_buckets["cleaned"],
+                "--raw_data": test_buckets["raw"],
+                "--cleaned_data": test_buckets["cleaned"],
             },
         )
 
@@ -46,7 +46,7 @@ class TestDataPipeline:
         assert response["Job"]["Name"] == job_name  # nosec
         assert (
             # nosec
-            response["Job"]["DefaultArguments"]["--raw-bucket"]
+            response["Job"]["DefaultArguments"]["--raw_data"]
             == test_buckets["raw"]
         )
 

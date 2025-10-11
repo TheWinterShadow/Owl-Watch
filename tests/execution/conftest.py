@@ -1,3 +1,10 @@
+"""
+Test Configuration and Fixtures
+
+This module provides shared test fixtures and configuration for the execution test suite.
+It includes AWS service mocks, sample data, and common test utilities.
+"""
+
 from typing import Any, Dict
 
 import boto3
@@ -7,12 +14,17 @@ from moto import mock_glue, mock_s3
 
 @pytest.fixture
 def lambda_event():
-    """Mocked Lambda event for testing."""
+    """
+    Fixture providing a sample AWS Lambda event structure.
+
+    Returns:
+        Dictionary containing a mock S3 event record
+    """
     return {
         "Records": [
             {
                 "s3": {
-                    "bucket": {"name": "test-cleaned-bucket"},
+                    "bucket": {"name": "test-cleaned_data"},
                     "object": {"key": "test-key.json"},
                 }
             }
@@ -22,7 +34,12 @@ def lambda_event():
 
 @pytest.fixture
 def monitor():
-    """Mocked monitor object for testing."""
+    """
+    Fixture providing a dummy monitor for testing.
+
+    Returns:
+        DummyMonitor instance with a run method that always returns True
+    """
 
     class DummyMonitor:
         def run(self, *args, **kwargs):
@@ -33,12 +50,17 @@ def monitor():
 
 @pytest.fixture
 def sample_event_data():
-    """Mocked sample event data for end-to-end monitoring test."""
+    """
+    Fixture providing sample S3 event data for testing.
+
+    Returns:
+        Dictionary containing mock S3 event records
+    """
     return {
         "Records": [
             {
                 "s3": {
-                    "bucket": {"name": "test-cleaned-bucket"},
+                    "bucket": {"name": "test-cleaned_data"},
                     "object": {"key": "test-key.json"},
                 }
             }
@@ -48,7 +70,12 @@ def sample_event_data():
 
 @pytest.fixture
 def aws_credentials():
-    """Mocked AWS Credentials for moto."""
+    """
+    Fixture that sets up mock AWS credentials for testing.
+
+    Sets environment variables with dummy AWS credentials to prevent
+    tests from attempting to use real AWS credentials.
+    """
     import os
 
     os.environ["AWS_ACCESS_KEY_ID"] = "testing"
@@ -60,21 +87,18 @@ def aws_credentials():
 
 @pytest.fixture
 def s3_client(aws_credentials):
-    """Create mocked S3 client."""
     with mock_s3():
         yield boto3.client("s3", region_name="us-east-1")
 
 
 @pytest.fixture
 def glue_client(aws_credentials):
-    """Create mocked Glue client."""
     with mock_glue():
         yield boto3.client("glue", region_name="us-east-1")
 
 
 @pytest.fixture
 def sample_data() -> Dict[str, Any]:
-    """Sample data for testing."""
     return {
         "id": "test-001",
         "text": "This is a positive message about our product",
@@ -86,7 +110,6 @@ def sample_data() -> Dict[str, Any]:
 
 @pytest.fixture
 def test_buckets(s3_client):
-    """Create test S3 buckets."""
     buckets = {
         "raw": "test-owl-watch-raw",
         "cleaned": "test-owl-watch-cleaned",

@@ -3,7 +3,7 @@
 import json
 from unittest.mock import MagicMock
 
-from execution.ml.bedrock_processor import handler
+from execution.enrichment_jobs.bedrock_processor import handler
 
 
 class TestLambdaHandler:

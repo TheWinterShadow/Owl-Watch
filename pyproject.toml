@@ -3,11 +3,10 @@ isort = "python -m isort {args}"
 black = "python -m black {args}"
 flake8 = "python -m flake8 {args}"
 mypy = "python -m mypy --exclude 'execution/docs' {args}"
-
-# ETL job runners for development
-run-etl = "python execution/local_etl_runner.py {args}"
-run-email-etl = "python execution/local_etl_runner.py --job-type email_communication {args}"
-run-slack-etl = "python execution/local_etl_runner.py --job-type slack_communication {args}"
+format = [
+    "isort execution tests/execution integration_tests tests/integration_tests",
+    "black execution tests/execution integration_tests tests/integration_tests"
+]
 
 [build-system]
 requires = ["hatchling"]
@@ -18,21 +17,23 @@ directory = "execution/dist"
 
 [tool.hatch.envs.default.scripts]
 pre-build = [
-    "isort execution/etl execution/ml tests/execution integration_tests tests/integration_tests --check --diff",
-    "black --check execution/etl execution/ml tests/execution integration_tests tests/integration_tests",
-    "mypy execution/etl execution/ml tests/execution integration_tests tests/integration_tests",
-    "flake8 execution/etl execution/ml tests/execution integration_tests tests/integration_tests",
-    "bandit -r execution/",
-    "bandit -r integration_tests/",
-]
-
-format = [
-    "isort execution/etl execution/ml tests/execution integration_tests tests/integration_tests",
-    "black execution/etl execution/ml tests/execution integration_tests tests/integration_tests"
+    "isort execution tests/execution integration_tests tests/integration_tests --check --diff",
+    "black --check execution tests/execution integration_tests tests/integration_tests",
+    "mypy execution tests/execution integration_tests tests/integration_tests",
+    "flake8 execution tests/execution integration_tests tests/integration_tests",
+    "bandit -r execution",
+    "bandit -r integration_tests",
 ]
 
 # Sphinx documentation build script
 docs = "sphinx-build -b html execution/docs/source execution/docs/build"
+
+release = [
+    "hatch run pre-build",
+    "hatch build",
+    "hatch test",
+    "hatch run docs"
+]
 
 
 [tool.hatch.envs.default]
@@ -41,6 +42,12 @@ dependencies = [
     "pyspark",
     "pandas",
     "numpy",
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-mock>=3.10.0",
+    "pytest-cov",
+    "moto",
+    "moto[glue]==4.1.14",
 ]
 
 [tool.hatch.envs.dev]
@@ -70,7 +77,30 @@ dependencies = [
     "moto[glue]==4.1.14",
     "pytest-asyncio>=0.21.0",
     "pytest-mock>=3.10.0",
+    "aws_lambda_powertools",
+    "mypy_boto3_sts",
+    "mypy_boto3_bedrock_runtime"
+]
+
+[[tool.hatch.envs.hatch-test.matrix]]
+python = ["3.13"]
+
+[tool.hatch.envs.hatch-test]
+dependencies = [
     "boto3",
+    "pyspark",
+    "pandas",
+    "numpy",
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-mock>=3.10.0",
+    "pytest-cov",
+    "moto",
+    "moto[glue]==4.1.14",
+    "aws-glue-libs @ git+https://github.com/awslabs/aws-glue-libs.git",
+    "aws_lambda_powertools",
+    "mypy_boto3_sts",
+    "mypy_boto3_bedrock_runtime"
 ]
 
 
@@ -131,4 +161,4 @@ python_classes = ["Test*"]
 python_functions = ["test_*"]
 
 [tool.hatch.build.targets.wheel]
-packages = ["execution/etl", "execution/ml"]
+packages = ["execution/"]
