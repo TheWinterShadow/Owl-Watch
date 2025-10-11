@@ -63,7 +63,11 @@ class DataTransformationETL(BaseGlueETLJob):
             raise ValueError("Both input-bucket and output-bucket must be specified")
 
         print(f"Processing data from s3://{input_bucket}/")
-        print(f"Transformation type: {transformation_type}")
+        self.logger.secure_info(
+            "Processing data",
+            bucket=input_bucket,
+            transformation_type=transformation_type
+        )
 
         df = self._read_input_data(input_bucket)
 

@@ -146,13 +146,13 @@ class BaseGlueETLJob(ABC):
 
         validation_result = self.schema_validator.validate_schema(df, expected_schema)
 
-        if validation_result["is_valid"]:
+        if validation_result.is_valid:
             logger.secure_info("Schema validation passed")
         else:
             logger.secure_warning(
                 "Schema validation failed",
-                errors=validation_result["errors"],
-                warnings=validation_result["warnings"],
+                errors=validation_result.errors,
+                warnings=validation_result.warnings,
             )
 
         return validation_result
