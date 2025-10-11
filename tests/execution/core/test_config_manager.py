@@ -71,7 +71,7 @@ class TestJobConfigManager(unittest.TestCase):
 
         result = self.config_manager.determine_job_type(file_path)
 
-        self.assertEqual(result, JobType.ANALYSTICS)
+        self.assertEqual(result, JobType.ANALYTICS)
 
     def test_determine_job_type_invalid(self):
         file_path = "invalid/path/file.json"
