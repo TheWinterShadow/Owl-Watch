@@ -6,7 +6,7 @@ I have successfully created a comprehensive exception handling system for the ex
 
 ## Files Created
 
-### 1. `/execution/schemas/exceptions.py` (Main Exception Definitions)
+### 1. `/execution/models/exceptions/__init__.py` (Main Exception Definitions)
 - **Base Exception**: `OwlWatchExecutionException` - All custom exceptions inherit from this
 - **Configuration Exceptions**: 
   - `MissingConfigurationError` - For missing required parameters
