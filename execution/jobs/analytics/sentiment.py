@@ -50,18 +50,15 @@ class SentimentAnalysisETL(BaseGlueETLJob):
         curated_bucket = ""
 
         if not cleaned_bucket or not curated_bucket:
-            raise ValueError(
-                "Both cleaned_data and curated_data must be specified")
+            raise ValueError("Both cleaned_data and curated_data must be specified")
 
         print(
             f"Processing communication data from s3://{cleaned_bucket}/communications/"
         )
 
         try:
-            email_df = self._safe_read(
-                f"s3://{cleaned_bucket}/communications/emails/")
-            slack_df = self._safe_read(
-                f"s3://{cleaned_bucket}/communications/slack/")
+            email_df = self._safe_read(f"s3://{cleaned_bucket}/communications/emails/")
+            slack_df = self._safe_read(f"s3://{cleaned_bucket}/communications/slack/")
             whatsapp_df = self._safe_read(
                 f"s3://{cleaned_bucket}/communications/whatsapp/"
             )
@@ -72,8 +69,7 @@ class SentimentAnalysisETL(BaseGlueETLJob):
 
             if not communication_dfs:
                 try:
-                    df = self.spark.read.parquet(
-                        f"s3://{cleaned_bucket}/cleaned/")
+                    df = self.spark.read.parquet(f"s3://{cleaned_bucket}/cleaned/")
                 except Exception:
                     df = self.spark.read.parquet(f"s3://{cleaned_bucket}/")
             else:
@@ -89,8 +85,7 @@ class SentimentAnalysisETL(BaseGlueETLJob):
                 print(
                     f"Could not read any data from {cleaned_bucket}: {fallback_error}"
                 )
-                raise ValueError(
-                    f"No data available in bucket {cleaned_bucket}")
+                raise ValueError(f"No data available in bucket {cleaned_bucket}")
 
         print(f"Read {df.count()} communication records for sentiment analysis")
 
@@ -101,8 +96,7 @@ class SentimentAnalysisETL(BaseGlueETLJob):
 
         sentiment_df.write.mode("overwrite").parquet(output_path)
 
-        print(
-            f"Successfully analyzed sentiment for {sentiment_df.count()} records")
+        print(f"Successfully analyzed sentiment for {sentiment_df.count()} records")
         return sentiment_df
 
     def _safe_read(self, path: str) -> Optional[DataFrame]:
@@ -131,8 +125,7 @@ class SentimentAnalysisETL(BaseGlueETLJob):
         )
 
         sentiment_df = df_clean.withColumn(
-            "sentiment_score", self._calculate_sentiment_score(
-                col("clean_text"))
+            "sentiment_score", self._calculate_sentiment_score(col("clean_text"))
         ).withColumn(
             "sentiment_label",
             when(col("sentiment_score") > 0.1, "positive")
@@ -141,18 +134,15 @@ class SentimentAnalysisETL(BaseGlueETLJob):
         )
 
         sentiment_df = (
-            sentiment_df.withColumn(
-                "confidence", spark_abs(col("sentiment_score")))
+            sentiment_df.withColumn("confidence", spark_abs(col("sentiment_score")))
             .withColumn("word_count", size(split(col("clean_text"), r"\s+")))
             .withColumn(
                 "positive_word_count",
-                self._count_sentiment_words(
-                    col("clean_text"), lit("positive")),
+                self._count_sentiment_words(col("clean_text"), lit("positive")),
             )
             .withColumn(
                 "negative_word_count",
-                self._count_sentiment_words(
-                    col("clean_text"), lit("negative")),
+                self._count_sentiment_words(col("clean_text"), lit("negative")),
             )
         )
 
@@ -197,8 +187,7 @@ class SentimentAnalysisETL(BaseGlueETLJob):
             ).otherwise(0.0)
 
         return when(
-            size(split(text_col, r"\s+")) > 0, score /
-            size(split(text_col, r"\s+"))
+            size(split(text_col, r"\s+")) > 0, score / size(split(text_col, r"\s+"))
         ).otherwise(0.0)
 
     def _count_sentiment_words(self, text_col, sentiment_type):
@@ -209,8 +198,7 @@ class SentimentAnalysisETL(BaseGlueETLJob):
 
         count = lit(0)
         for word in word_dict.keys():
-            count = count + \
-                when(text_col.rlike(f"\\b{word}\\b"), 1).otherwise(0)
+            count = count + when(text_col.rlike(f"\\b{word}\\b"), 1).otherwise(0)
 
         return count
 
@@ -222,16 +210,13 @@ class SentimentAnalysisETL(BaseGlueETLJob):
                 "excitement",
             )
             .when(
-                text_col.rlike(
-                    r"\\b(sad|disappointed|unhappy|depressed)\\b"), "sadness"
+                text_col.rlike(r"\\b(sad|disappointed|unhappy|depressed)\\b"), "sadness"
             )
             .when(
-                text_col.rlike(
-                    r"\\b(worried|concerned|anxious|nervous)\\b"), "concern"
+                text_col.rlike(r"\\b(worried|concerned|anxious|nervous)\\b"), "concern"
             )
             .when(
-                text_col.rlike(
-                    r"\\b(grateful|thankful|appreciative)\\b"), "gratitude"
+                text_col.rlike(r"\\b(grateful|thankful|appreciative)\\b"), "gratitude"
             )
             .otherwise("neutral")
         )

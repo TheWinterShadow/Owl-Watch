@@ -62,8 +62,7 @@ class BedrockAIProcessingETL(BaseGlueETLJob):
         model_id = self.args.get("model-id", "anthropic.claude-v2")
 
         if not input_bucket or not output_bucket:
-            raise ValueError(
-                "Both input-bucket and output-bucket must be specified")
+            raise ValueError("Both input-bucket and output-bucket must be specified")
 
         logger.secure_info(f"Processing data with Bedrock model: {model_id}")
         logger.secure_info(f"Reading from s3://{input_bucket}/")
@@ -124,8 +123,7 @@ class BedrockAIProcessingETL(BaseGlueETLJob):
                 "bedrock-runtime", region_name=self.args.get("aws-region", "us-east-1")
             )
         except Exception as e:
-            logger.secure_warning(
-                f"Warning: Could not initialize Bedrock client: {e}")
+            logger.secure_warning(f"Warning: Could not initialize Bedrock client: {e}")
             logger.warning("AI processing will use mock responses")
             raise e
 
@@ -162,8 +160,7 @@ class BedrockAIProcessingETL(BaseGlueETLJob):
         if not text_column:
             raise ValueError("No suitable text column found for AI processing")
 
-        processed_df = df.withColumn(
-            "ai_analysis", bedrock_udf(col(text_column)))
+        processed_df = df.withColumn("ai_analysis", bedrock_udf(col(text_column)))
 
         processed_df = processed_df.select(
             "*",
@@ -239,8 +236,7 @@ class BedrockAIProcessingETL(BaseGlueETLJob):
         return result.get("completion", "")
 
     def _call_llama_model(self, prompt: str, model_id: str) -> str:
-        body = {"prompt": prompt, "max_gen_len": 500,
-                "temperature": 0.1, "top_p": 0.9}
+        body = {"prompt": prompt, "max_gen_len": 500, "temperature": 0.1, "top_p": 0.9}
 
         response = self._bedrock_client.invoke_model(
             modelId=model_id, body=json.dumps(body), contentType="application/json"

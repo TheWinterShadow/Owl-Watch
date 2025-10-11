@@ -129,8 +129,7 @@ class BaseGlueETLJob(ABC):
             logger.secure_debug("Generating record IDs", prefix=prefix)
             result_df = df.withColumn(
                 "record_id",
-                concat(lit(f"{prefix}-"),
-                       monotonically_increasing_id().cast("string")),
+                concat(lit(f"{prefix}-"), monotonically_increasing_id().cast("string")),
             )
             logger.secure_debug("Record IDs generated successfully")
             return result_df
@@ -145,8 +144,7 @@ class BaseGlueETLJob(ABC):
     ) -> ValidationResult:
         logger.secure_debug("Starting schema validation")
 
-        validation_result = self.schema_validator.validate_schema(
-            df, expected_schema)
+        validation_result = self.schema_validator.validate_schema(df, expected_schema)
 
         if validation_result["is_valid"]:
             logger.secure_info("Schema validation passed")
@@ -210,6 +208,5 @@ class BaseGlueETLJob(ABC):
             logger.secure_info("Expected fields selected successfully")
             return result_df
         except Exception as e:
-            logger.secure_error(
-                "Error selecting expected fields", error=str(e))
+            logger.secure_error("Error selecting expected fields", error=str(e))
             raise

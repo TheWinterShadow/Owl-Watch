@@ -56,8 +56,7 @@ class SecureLogger(PowertoolsLogger):
 
         value_str = str(value)
         value_str = (
-            value_str.replace("\n", "\\n").replace(
-                "\r", "\\r").replace("\t", "\\t")
+            value_str.replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t")
         )
 
         if len(value_str) > self._max_length:

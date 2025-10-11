@@ -139,8 +139,7 @@ class TestBedrockAIProcessingETL(unittest.TestCase):
         result = job._read_input_data("test-bucket")
 
         self.assertEqual(result, mock_df)
-        mock_spark.read.parquet.assert_called_with(
-            "s3://test-bucket/communications/")
+        mock_spark.read.parquet.assert_called_with("s3://test-bucket/communications/")
 
     @patch("execution.jobs.analytics.bedrock_ai.BaseGlueETLJob.__init__")
     @patch(
@@ -156,8 +155,7 @@ class TestBedrockAIProcessingETL(unittest.TestCase):
         mock_spark = Mock()
         mock_df = Mock()
 
-        mock_spark.read.parquet.side_effect = [
-            Exception("No communications"), mock_df]
+        mock_spark.read.parquet.side_effect = [Exception("No communications"), mock_df]
         job.spark = mock_spark
 
         result = job._read_input_data("test-bucket")
