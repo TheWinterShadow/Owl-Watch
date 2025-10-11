@@ -63,7 +63,7 @@ raise MissingConfigurationError(
 Used when configuration values are invalid:
 
 ```python
-from execution.schemas.exceptions import InvalidConfigurationError
+from execution.models.exceptions import InvalidConfigurationError
 
 # Basic usage
 raise InvalidConfigurationError(
