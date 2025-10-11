@@ -57,7 +57,7 @@ class JobType(Enum):
     CLEANING = "cleaned"
     SENTIMENT = "sentiment"
     NLP = "nlp"
-    ANALYSTICS = "analytics"
+    ANALYTICS = "analytics"
     COMMUNICATION_ETL = "communication_etl"
 
 
