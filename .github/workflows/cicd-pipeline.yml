@@ -175,6 +175,9 @@ jobs:
     name: Manual Approval for Production Deployment
     needs: runIntegTests
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
     timeout-minutes: 1440  # 24 hours timeout for manual approval
     steps:
       - name: Manual Approval Required
