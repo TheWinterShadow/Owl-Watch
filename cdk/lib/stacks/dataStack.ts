@@ -12,7 +12,7 @@ export class DataStack extends Stack {
   constructor(scope: Construct, id: string, props: OwlWatchStackProps) {
     super(scope, id, props);
 
-    this.dataBucket = createS3Bucket(this, props.stageName, 'owl-watch-bucket', [
+    this.dataBucket = createS3Bucket(this, props.stageName, 'owl-watch-data-bucket', [
       {
         id: 'RawDataLifecycleRule',
         enabled: true,
