@@ -1,0 +1,24 @@
+{
+    "test_pipeline_config": {
+        "glue_job_name": "owl-watch-test-etl-job",
+        "input_bucket": "owl-watch-integration-test-input",
+        "output_bucket": "owl-watch-integration-test-output",
+        "database_name": "owl_watch_test_db",
+        "table_name": "test_sensor_data",
+        "timeout_seconds": 300
+    },
+    "data_quality_thresholds": {
+        "min_quality_score": 0.8,
+        "max_null_percentage": 0.05,
+        "required_fields": [
+            "id",
+            "timestamp",
+            "sensor_data"
+        ]
+    },
+    "performance_benchmarks": {
+        "max_processing_time_seconds": 120,
+        "max_memory_usage_mb": 512,
+        "min_throughput_records_per_second": 100
+    }
+}
