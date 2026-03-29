@@ -1,0 +1,11 @@
+id,timestamp,sensor_type,value,location,quality_score
+1,2025-10-12T10:00:00Z,temperature,23.5,sensor_001,0.95
+2,2025-10-12T10:01:00Z,humidity,45.2,sensor_002,0.92
+3,2025-10-12T10:02:00Z,pressure,1013.25,sensor_003,0.98
+4,2025-10-12T10:03:00Z,temperature,24.1,sensor_004,0.89
+5,2025-10-12T10:04:00Z,humidity,43.8,sensor_005,0.96
+6,2025-10-12T10:05:00Z,pressure,1012.85,sensor_006,0.91
+7,2025-10-12T10:06:00Z,temperature,22.8,sensor_007,0.87
+8,2025-10-12T10:07:00Z,humidity,48.1,sensor_008,0.94
+9,2025-10-12T10:08:00Z,pressure,1014.02,sensor_009,0.93
+10,2025-10-12T10:09:00Z,temperature,25.3,sensor_010,0.97

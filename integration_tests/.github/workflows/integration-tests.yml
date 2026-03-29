@@ -1,0 +1,172 @@
+name: Integration Tests
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to test against'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+      tests:
+        description: 'Tests to run (comma-separated)'
+        required: false
+        default: 'csv-etl-transform-test'
+
+jobs:
+  integration-tests:
+    name: Run Integration Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    
+    permissions:
+      id-token: write   # This is required for AWS OIDC
+      contents: read    # This is required for actions/checkout
+    
+    env:
+      AWS_REGION: us-east-1
+      ENVIRONMENT: ${{ github.event.inputs.environment || 'dev' }}
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}  # TODO: Add this secret
+          aws-region: ${{ env.AWS_REGION }}
+          
+      - name: Setup Node.js for CDK
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: integration_tests/cdk/package-lock.json
+          
+      - name: Install CDK dependencies
+        working-directory: integration_tests/cdk
+        run: npm ci
+        
+      - name: Install AWS CDK CLI
+        run: npm install -g aws-cdk
+        
+      - name: Check infrastructure status
+        id: infra-check
+        working-directory: integration_tests
+        run: |
+          # Check if Lambda function exists
+          FUNCTION_NAME="owl-watch-integration-test-runner-${{ env.ENVIRONMENT }}"
+          if aws lambda get-function --function-name "$FUNCTION_NAME" >/dev/null 2>&1; then
+            echo "infrastructure_exists=true" >> $GITHUB_OUTPUT
+            echo "✅ Infrastructure exists"
+          else
+            echo "infrastructure_exists=false" >> $GITHUB_OUTPUT
+            echo "❌ Infrastructure not found"
+          fi
+          
+      - name: Deploy integration test infrastructure
+        if: steps.infra-check.outputs.infrastructure_exists == 'false'
+        working-directory: integration_tests
+        run: ./scripts/deploy-infrastructure.sh ${{ env.ENVIRONMENT }} ${{ env.AWS_REGION }}
+        
+      - name: Run integration tests
+        id: run-tests
+        working-directory: integration_tests
+        run: |
+          TESTS="${{ github.event.inputs.tests || 'csv-etl-transform-test' }}"
+          ./scripts/run-integration-tests.sh ${{ env.ENVIRONMENT }} "$TESTS"
+          
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-test-results-${{ env.ENVIRONMENT }}
+          path: |
+            integration_tests/outputs-${{ env.ENVIRONMENT }}.json
+            integration_tests/test-results-*.json
+          retention-days: 30
+          
+      - name: Comment PR with results
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const passed = '${{ steps.run-tests.outputs.test_results_passed }}' || '0';
+            const total = '${{ steps.run-tests.outputs.test_results_total }}' || '0';
+            const duration = '${{ steps.run-tests.outputs.test_results_duration }}' || '0';
+            const success = '${{ steps.run-tests.outputs.test_results_success }}' === 'true';
+            
+            const status = success ? '✅ PASSED' : '❌ FAILED';
+            const emoji = success ? '🎉' : '💥';
+            
+            const comment = `## ${emoji} Integration Test Results ${emoji}
+            
+            **Status:** ${status}
+            **Environment:** ${{ env.ENVIRONMENT }}
+            **Tests Passed:** ${passed}/${total}
+            **Duration:** ${duration}s
+            
+            ${success ? 'All integration tests passed successfully!' : 'Some integration tests failed. Check the logs for details.'}
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+            
+      - name: Fail job if tests failed
+        if: steps.run-tests.outputs.test_results_success != 'true'
+        run: |
+          echo "❌ Integration tests failed"
+          exit 1
+
+  cleanup-on-failure:
+    name: Cleanup on Failure
+    runs-on: ubuntu-latest
+    needs: integration-tests
+    if: failure() && github.event_name != 'pull_request'
+    
+    permissions:
+      id-token: write
+      contents: read
+      
+    env:
+      AWS_REGION: us-east-1
+      ENVIRONMENT: ${{ github.event.inputs.environment || 'dev' }}
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Configure AWS credentials  
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          
+      - name: Install CDK CLI
+        run: npm install -g aws-cdk
+        
+      - name: Clean up failed infrastructure (optional)
+        working-directory: integration_tests
+        run: |
+          echo "🧹 Infrastructure cleanup can be performed here if needed"
+          echo "For now, we'll leave infrastructure for debugging"
+          # Uncomment the next line to auto-cleanup on failure
+          # ./scripts/destroy-infrastructure.sh ${{ env.ENVIRONMENT }} ${{ env.AWS_REGION }}
