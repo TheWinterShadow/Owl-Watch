@@ -1,0 +1,54 @@
+{
+    "type": "array",
+    "items": {
+        "type": "object",
+        "required": [
+            "id",
+            "timestamp",
+            "sensor_type",
+            "value",
+            "location",
+            "quality_score",
+            "processed_at"
+        ],
+        "properties": {
+            "id": {
+                "type": "string",
+                "description": "Unique sensor reading identifier"
+            },
+            "timestamp": {
+                "type": "string",
+                "format": "date-time",
+                "description": "ISO 8601 timestamp of sensor reading"
+            },
+            "sensor_type": {
+                "type": "string",
+                "enum": [
+                    "temperature",
+                    "humidity",
+                    "pressure"
+                ],
+                "description": "Type of sensor measurement"
+            },
+            "value": {
+                "type": "number",
+                "description": "Sensor reading value"
+            },
+            "location": {
+                "type": "string",
+                "description": "Sensor location identifier"
+            },
+            "quality_score": {
+                "type": "number",
+                "minimum": 0.0,
+                "maximum": 1.0,
+                "description": "Data quality score"
+            },
+            "processed_at": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Timestamp when record was processed"
+            }
+        }
+    }
+}

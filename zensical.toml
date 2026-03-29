@@ -1,0 +1,172 @@
+# Zensical configuration for Owl-Watch docs.
+
+[project]
+site_name = "Owl-Watch"
+site_url = "https://owl-watch.thewintershadow.com"
+site_description = "AWS-native data engineering pipeline using Glue, Bedrock, and ML"
+site_author = "TheWinterShadow"
+copyright = "Copyright &copy; 2026 TheWinterShadow &mdash; MIT License"
+docs_dir = "docs"
+site_dir = "site"
+
+repo_name = "TheWinterShadow/Owl-Watch"
+repo_url = "https://github.com/TheWinterShadow/Owl-Watch"
+edit_uri = "edit/main/docs/"
+
+nav = [
+  { "🏠 Home" = "index.md" },
+  { "🏗️ Architecture" = "architecture/index.md" },
+  { "📚 API Reference" = [
+    { "Core" = [
+      { "Config Manager" = "api/core/config_manager.md" },
+      { "Local Runner" = "api/core/local_runner.md" },
+      { "Job Runner" = "api/core/job_runner.md" },
+      { "Job Factory" = "api/core/job_factory.md" },
+      { "Main" = "api/core/main.md" }
+    ]},
+    { "Jobs" = [
+      { "Communication" = "api/jobs/communication.md" },
+      { "Data" = "api/jobs/data.md" },
+      { "Analytics" = "api/jobs/analytics.md" }
+    ]},
+    { "Models" = [
+      { "Base" = "api/models/base.md" },
+      { "Base Job" = "api/models/base_job.md" },
+      { "Data Quality" = "api/models/data_quality.md" },
+      { "Job Metadata" = "api/models/job_metadata.md" },
+      { "Exceptions" = "api/models/exceptions.md" }
+    ]},
+    { "Schemas" = [
+      { "Communication Schema" = "api/schemas/communication_schema.md" }
+    ]},
+    { "Utils" = [
+      { "Logger" = "api/utils/logger.md" },
+      { "Validation" = "api/utils/validation.md" }
+    ]}
+  ]}
+]
+
+# ── Markdown extensions ──────────────────────────────────────────────────────
+
+[project.markdown_extensions.abbr]
+[project.markdown_extensions.admonition]
+[project.markdown_extensions.attr_list]
+[project.markdown_extensions.def_list]
+[project.markdown_extensions.footnotes]
+[project.markdown_extensions.md_in_html]
+
+[project.markdown_extensions.toc]
+permalink = true
+
+[project.markdown_extensions.pymdownx.betterem]
+smart_enable = "all"
+
+[project.markdown_extensions.pymdownx.caret]
+[project.markdown_extensions.pymdownx.details]
+
+[project.markdown_extensions.pymdownx.emoji]
+emoji_generator = "zensical.extensions.emoji.to_svg"
+emoji_index     = "zensical.extensions.emoji.twemoji"
+
+[project.markdown_extensions.pymdownx.highlight]
+anchor_linenums     = true
+line_spans          = "__span"
+pygments_lang_class = true
+
+[project.markdown_extensions.pymdownx.inlinehilite]
+[project.markdown_extensions.pymdownx.keys]
+[project.markdown_extensions.pymdownx.mark]
+[project.markdown_extensions.pymdownx.smartsymbols]
+[project.markdown_extensions.pymdownx.snippets]
+
+[project.markdown_extensions.pymdownx.superfences]
+custom_fences = [
+  { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" },
+]
+
+[project.markdown_extensions.pymdownx.tabbed]
+alternate_style = true
+
+[project.markdown_extensions.pymdownx.tasklist]
+custom_checkbox = true
+
+[project.markdown_extensions.pymdownx.tilde]
+
+# ── Plugins ──────────────────────────────────────────────────────────────────
+
+[project.plugins.search]
+[project.plugins.autorefs]
+
+[project.plugins.mkdocstrings.handlers.python]
+paths = ["."]
+[project.plugins.mkdocstrings.handlers.python.options]
+docstring_style = "google"
+show_source = false
+show_root_heading = true
+show_signature_annotations = true
+show_if_no_docstring = true
+members_order = "source"
+show_bases = false
+
+# ── Theme ────────────────────────────────────────────────────────────────────
+
+[project.theme]
+name = "material"
+features = [
+  # Instant SPA navigation
+  "navigation.instant",
+  "navigation.instant.prefetch",
+  "navigation.instant.progress",
+  "navigation.tracking",
+  # Navigation layout
+  "navigation.tabs",
+  "navigation.tabs.sticky",
+  "navigation.sections",
+  "navigation.path",
+  "navigation.indexes",
+  "navigation.top",
+  "navigation.footer",
+  # Search
+  "search.highlight",
+  "search.share",
+  "search.suggest",
+  # Code blocks
+  "content.code.annotate",
+  "content.code.copy",
+  "content.code.select",
+  # Tabs
+  "content.tabs.link",
+  # TOC
+  "toc.follow",
+]
+
+[project.theme.icon]
+logo = "fontawesome/solid/owl"
+repo = "fontawesome/brands/github"
+edit = "lucide/pencil"
+view = "lucide/eye"
+
+# ── Color palettes (respects system preference) ──────────────────────────────
+
+[[project.theme.palette]]
+media       = "(prefers-color-scheme: light)"
+scheme      = "default"
+primary     = "teal"
+accent      = "amber"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+media       = "(prefers-color-scheme: dark)"
+scheme      = "slate"
+primary     = "teal"
+accent      = "amber"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to light mode"
+
+# ── Footer social links ───────────────────────────────────────────────────────
+
+[[project.extra.social]]
+icon = "fontawesome/brands/github"
+link = "https://github.com/TheWinterShadow/Owl-Watch"
+name = "GitHub"

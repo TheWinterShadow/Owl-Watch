@@ -1,0 +1,29 @@
+[
+    {
+        "id": "1",
+        "timestamp": "2025-10-12T10:00:00Z",
+        "sensor_type": "temperature",
+        "value": 23.5,
+        "location": "sensor_001",
+        "quality_score": 0.95,
+        "processed_at": "2025-10-12T10:00:00Z"
+    },
+    {
+        "id": "2",
+        "timestamp": "2025-10-12T10:01:00Z",
+        "sensor_type": "humidity",
+        "value": 45.2,
+        "location": "sensor_002",
+        "quality_score": 0.92,
+        "processed_at": "2025-10-12T10:01:00Z"
+    },
+    {
+        "id": "3",
+        "timestamp": "2025-10-12T10:02:00Z",
+        "sensor_type": "pressure",
+        "value": 1013.25,
+        "location": "sensor_003",
+        "quality_score": 0.98,
+        "processed_at": "2025-10-12T10:02:00Z"
+    }
+]

@@ -1,0 +1,47 @@
+[
+    {
+        "id": "001",
+        "timestamp": "2025-10-12T10:00:00Z",
+        "sensor_data": {
+            "temperature": 23.5,
+            "humidity": 45.2,
+            "pressure": 1013.25
+        },
+        "location": {
+            "lat": 40.7128,
+            "lon": -74.0060,
+            "city": "New York"
+        },
+        "quality_score": 0.95
+    },
+    {
+        "id": "002",
+        "timestamp": "2025-10-12T10:01:00Z",
+        "sensor_data": {
+            "temperature": 24.1,
+            "humidity": 43.8,
+            "pressure": 1013.50
+        },
+        "location": {
+            "lat": 34.0522,
+            "lon": -118.2437,
+            "city": "Los Angeles"
+        },
+        "quality_score": 0.98
+    },
+    {
+        "id": "003",
+        "timestamp": "2025-10-12T10:02:00Z",
+        "sensor_data": {
+            "temperature": 22.8,
+            "humidity": 48.1,
+            "pressure": 1012.85
+        },
+        "location": {
+            "lat": 41.8781,
+            "lon": -87.6298,
+            "city": "Chicago"
+        },
+        "quality_score": 0.92
+    }
+]
