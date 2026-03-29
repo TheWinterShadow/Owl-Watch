@@ -141,7 +141,7 @@ features = [
 ]
 
 [project.theme.icon]
-logo = "fontawesome/solid/owl"
+logo = "fontawesome/solid/eye"
 repo = "fontawesome/brands/github"
 edit = "lucide/pencil"
 view = "lucide/eye"
